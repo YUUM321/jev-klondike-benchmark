@@ -9,9 +9,9 @@ import urllib.error
 import urllib.request
 from typing import Any
 
-from solitaire.engine import Action, KlondikeEngine
+from solitaire.engine import Action
 
-from .base import Decision
+from .base import Decision, Observation
 
 
 class JevAPIError(RuntimeError):
@@ -42,6 +42,7 @@ class JevAgent:
         timeout: float = 30.0,
         retries: int = 2,
         option_order: str = "seeded",
+        option_order_seed: int = 0,
     ) -> None:
         self.api_key = api_key or os.getenv(api_key_env)
         self.api_key_env = api_key_env
@@ -52,27 +53,32 @@ class JevAgent:
         if option_order not in {"seeded", "canonical"}:
             raise ValueError("option_order must be 'seeded' or 'canonical'")
         self.option_order = option_order
-        self._seed = 0
+        self.option_order_seed = option_order_seed
 
     def reset(self, seed: int) -> None:
-        self._seed = seed
+        pass
 
-    def _ordered(self, engine: KlondikeEngine, actions: list[Action]) -> list[Action]:
+    def _ordered(self, observation: Observation, actions: list[Action]) -> list[Action]:
         ordered = list(actions)
         if self.option_order == "seeded":
-            material = f"{self._seed}:{engine.state_hash()}".encode("utf-8")
+            # Ordering may depend only on public observation data. The game seed
+            # and full state hash both encode hidden cards and are forbidden here.
+            material = (
+                f"option-order-v1:{self.option_order_seed}:"
+                f"{observation.step}:{observation.visible_state_hash}"
+            ).encode("utf-8")
             order_seed = int.from_bytes(hashlib.sha256(material).digest()[:8], "big")
             random.Random(order_seed).shuffle(ordered)
         return ordered
 
-    def choose(self, engine: KlondikeEngine, actions: list[Action]) -> Decision:
+    def choose(self, observation: Observation, actions: list[Action]) -> Decision:
         if not actions:
             raise ValueError("cannot choose without a legal action")
         if len(actions) == 1:
             return Decision(
                 action=actions[0],
-                confidence=1.0,
-                probabilities={engine.action_label(actions[0]): 1.0},
+                confidence=None,
+                probabilities={},
                 metadata={"forced": True, "candidate_count": 1},
             )
         if not self.api_key:
@@ -84,10 +90,10 @@ class JevAgent:
                 f"{len(actions)} legal actions exceed the documented 255 Choice limit"
             )
 
-        ordered = self._ordered(engine, actions)
+        ordered = self._ordered(observation, actions)
         option_map = {f"a{index:03d}": action for index, action in enumerate(ordered)}
         criteria = {
-            option_id: engine.action_label(action)
+            option_id: observation.label(action)
             for option_id, action in option_map.items()
         }
         payload = {
@@ -95,7 +101,7 @@ class JevAgent:
             "state": {
                 "game": "Klondike Solitaire",
                 "rules": "Draw-1; unlimited stock recycling; standard Klondike rules",
-                "visible_state": engine.get_visible_state(),
+                "visible_state": observation.visible_state,
             },
             "questions": {
                 "action": {

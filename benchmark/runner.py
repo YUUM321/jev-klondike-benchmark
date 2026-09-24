@@ -5,7 +5,7 @@ import time
 from dataclasses import asdict, dataclass
 from typing import Any
 
-from agents.base import Agent
+from agents.base import Agent, Observation
 from solitaire.engine import KlondikeEngine
 
 
@@ -18,8 +18,9 @@ class GameResult:
     hidden_cards_revealed: int
     steps: int
     repeated_states: int
-    unique_states: int
-    stop_reason: str
+    unique_states_visited: int
+    revisit_rate: float
+    termination_reason: str
     elapsed_seconds: float
     error: str | None = None
 
@@ -37,33 +38,39 @@ def run_game(
     agent.reset(seed)
 
     initial_hidden = engine.hidden_cards
-    max_foundation = engine.foundation_cards
     seen = {engine.state_hash()}
     repeated_states = 0
     cycle_stagnant = 0
     decisions: list[dict[str, Any]] = []
-    stop_reason = "turn_cap"
+    termination_reason = "turn_cap"
     error: str | None = None
     started = time.perf_counter()
 
     while engine.steps < max_steps:
         if engine.is_win():
-            stop_reason = "win"
+            termination_reason = "win"
             break
         actions = engine.get_legal_actions()
         if not actions:
-            stop_reason = "hard_dead_end"
+            termination_reason = "hard_dead_end"
             break
 
         before_state = engine.visible_text()
         before_state_data = engine.get_visible_state()
         legal_labels = [engine.action_label(action) for action in actions]
+        observation = Observation(
+            visible_state=before_state_data,
+            visible_text=before_state,
+            visible_state_hash=engine.visible_state_hash(),
+            step=engine.steps,
+            action_labels=dict(zip(actions, legal_labels)),
+        )
         try:
-            decision = agent.choose(engine, actions)
+            decision = agent.choose(observation, actions)
             if decision.action not in actions:
                 raise ValueError("agent returned an action outside the legal action set")
         except Exception as exc:  # Benchmark failures are data, not silent fallback.
-            stop_reason = "agent_error"
+            termination_reason = "agent_error"
             error = f"{type(exc).__name__}: {exc}"
             break
 
@@ -75,11 +82,7 @@ def run_game(
         else:
             seen.add(outcome.state_hash)
 
-        foundation_high = engine.foundation_cards > max_foundation
-        max_foundation = max(max_foundation, engine.foundation_cards)
-        structural_progress = outcome.hidden_cards_revealed > 0 or foundation_high
-        novel_progress = structural_progress or not was_seen
-        cycle_stagnant = 0 if novel_progress else cycle_stagnant + 1
+        cycle_stagnant = cycle_stagnant + 1 if was_seen else 0
 
         if capture_decisions:
             decisions.append(
@@ -103,11 +106,11 @@ def run_game(
             )
 
         if cycle_stagnant >= stagnation_steps:
-            stop_reason = "cycle_stagnation"
+            termination_reason = "cycle_stagnation"
             break
 
     if engine.is_win():
-        stop_reason = "win"
+        termination_reason = "win"
 
     result = GameResult(
         seed=seed,
@@ -117,15 +120,16 @@ def run_game(
         hidden_cards_revealed=initial_hidden - engine.hidden_cards,
         steps=engine.steps,
         repeated_states=repeated_states,
-        unique_states=len(seen),
-        stop_reason=stop_reason,
+        unique_states_visited=len(seen),
+        revisit_rate=round(repeated_states / engine.steps, 6) if engine.steps else 0.0,
+        termination_reason=termination_reason,
         elapsed_seconds=round(time.perf_counter() - started, 6),
         error=error,
     )
     final_result = "win" if result.win else "loss"
     for record in decisions:
         record["final_result"] = final_result
-        record["stop_reason"] = stop_reason
+        record["termination_reason"] = termination_reason
     return result, decisions
 
 

@@ -11,11 +11,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from agents import HeuristicAgent, JevAgent, RandomAgent
-from benchmark.metrics import summarize, write_summary
+from benchmark.metrics import summarize, write_runs_csv, write_summary
 from benchmark.runner import run_game
 
 
 ROOT = Path(__file__).resolve().parent
+
+
+def is_high_confidence_loss(decision: dict) -> bool:
+    return (
+        decision.get("final_result") == "loss"
+        and (decision.get("confidence") or 0) > 0.9
+        and not decision.get("decision_metadata", {}).get("forced", False)
+    )
 
 
 def read_seeds(path: Path) -> list[int]:
@@ -42,6 +50,7 @@ def build_agent(name: str, args: argparse.Namespace):
             timeout=args.jev_timeout,
             retries=args.jev_retries,
             option_order=args.jev_option_order,
+            option_order_seed=args.jev_option_order_seed,
         )
     raise ValueError(f"unknown agent: {name}")
 
@@ -71,6 +80,7 @@ def main() -> None:
     parser.add_argument(
         "--jev-option-order", choices=("seeded", "canonical"), default="seeded"
     )
+    parser.add_argument("--jev-option-order-seed", type=int, default=0)
     args = parser.parse_args()
 
     if "jev" in args.agents and not os.getenv(args.jev_api_key_env):
@@ -114,6 +124,7 @@ def main() -> None:
             "model_requested": args.jev_model,
             "api_key_env": args.jev_api_key_env,
             "option_order": args.jev_option_order,
+            "option_order_seed": args.jev_option_order_seed,
             "fallback": "none",
         },
         "argv": sys.argv,
@@ -145,19 +156,18 @@ def main() -> None:
                 runs_handle.flush()
                 for decision in decisions:
                     decisions_handle.write(json.dumps(decision, sort_keys=True) + "\n")
-                    if (
-                        decision.get("final_result") == "loss"
-                        and (decision.get("confidence") or 0) > 0.9
-                    ):
+                    if is_high_confidence_loss(decision):
                         high_confidence_losses.append(decision)
                 decisions_handle.flush()
                 print(
                     f"[{agent_name} {index}/{len(seeds)}] seed={seed} "
                     f"win={result.win} foundation={result.foundation_cards} "
-                    f"hidden={result.hidden_cards_revealed} stop={result.stop_reason}"
+                    f"hidden={result.hidden_cards_revealed} "
+                    f"stop={result.termination_reason}"
                 )
 
     rows = summarize(results)
+    write_runs_csv(output_dir / "runs.csv", results)
     write_summary(output_dir / "summary.csv", rows)
     with (output_dir / "high_confidence_losses.jsonl").open(
         "w", encoding="utf-8"

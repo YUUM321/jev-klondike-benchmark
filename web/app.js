@@ -177,7 +177,8 @@ function render() {
   ui["run-title"].textContent = `${replay.game.name} ${replay.game.variant}`;
   ui["agent-badge"].textContent = run.agent.toUpperCase();
   ui["seed-badge"].textContent = `seed ${run.seed}`;
-  ui["result-badge"].textContent = run.win ? "WIN" : run.stop_reason.replaceAll("_", " ").toUpperCase();
+  const termination = run.termination_reason;
+  ui["result-badge"].textContent = run.win ? "WIN" : termination.replaceAll("_", " ").toUpperCase();
   ui["result-badge"].className = `badge ${run.win ? "win" : "loss"}`;
   ui.action.textContent = frame.action || "初始牌局";
   ui["confidence-ring"].textContent = frame.confidence == null ? "—" : `${Math.round(frame.confidence * 100)}%`;
@@ -190,7 +191,9 @@ function render() {
   ui["foundation-metric"].textContent = `${foundation} / 52`;
   ui["stock-metric"].textContent = String(frame.state.stock_count);
   ui["hidden-metric"].textContent = String(hidden);
-  ui["states-metric"].textContent = frameIndex === last ? String(run.unique_states ?? "—") : "live";
+  ui["states-metric"].textContent = frameIndex === last
+    ? String(run.unique_states_visited ?? "—")
+    : "live";
 
   ui.timeline.max = String(last);
   ui.timeline.value = String(frameIndex);

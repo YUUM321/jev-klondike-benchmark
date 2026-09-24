@@ -143,6 +143,14 @@ class KlondikeEngine:
             f"Waste: {state['waste']}\nStock: {state['stock_count']}"
         )
 
+    def visible_state_hash(self) -> str:
+        """Hash only what a player can observe; safe for agent-side memory."""
+
+        raw = json.dumps(
+            self.get_visible_state(), sort_keys=True, separators=(",", ":")
+        )
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
     def _can_stack_on_tableau(self, card: Card, target: list[Card]) -> bool:
         if not target:
             return card.rank == 13
@@ -300,13 +308,6 @@ class KlondikeEngine:
             self._flip_exposed(source)
         else:  # pragma: no cover - Enum keeps this unreachable.
             raise ValueError(f"unknown action: {action.kind}")
-
-    def preview_state_hash(self, action: Action) -> str:
-        """Hash the successor of an action already returned by this engine."""
-
-        preview = self.clone()
-        preview._apply_action(action)
-        return preview.state_hash()
 
     def _flip_exposed(self, column: int) -> None:
         pile = self.tableau[column]

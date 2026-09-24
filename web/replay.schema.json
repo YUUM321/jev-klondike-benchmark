@@ -19,13 +19,17 @@
     },
     "run": {
       "type": "object",
-      "required": ["seed", "agent", "win", "steps", "stop_reason"],
+      "required": ["seed", "agent", "win", "steps", "termination_reason"],
       "properties": {
         "seed": { "type": "integer" },
         "agent": { "type": "string" },
         "win": { "type": "boolean" },
         "steps": { "type": "integer", "minimum": 0 },
-        "stop_reason": { "type": "string" }
+        "termination_reason": {
+          "enum": ["win", "hard_dead_end", "cycle_stagnation", "turn_cap", "agent_error"]
+        },
+        "unique_states_visited": { "type": "integer", "minimum": 1 },
+        "revisit_rate": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
     "frames": {

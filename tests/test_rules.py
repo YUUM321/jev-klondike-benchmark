@@ -42,8 +42,122 @@ class RulesTests(unittest.TestCase):
             draw_order.append(engine.waste[-1].code)
         self.assertFalse(engine.stock)
         engine.step(Action(ActionKind.RECYCLE))
-        engine.step(Action(ActionKind.DRAW))
-        self.assertEqual(engine.waste[-1].code, draw_order[0])
+        second_draw_order = []
+        for _ in range(24):
+            engine.step(Action(ActionKind.DRAW))
+            second_draw_order.append(engine.waste[-1].code)
+        self.assertEqual(second_draw_order, draw_order)
+
+    def test_state_hash_distinguishes_hidden_stock_order(self) -> None:
+        first = KlondikeEngine()
+        first.reset(8)
+        second = first.clone()
+        second.stock[0], second.stock[1] = second.stock[1], second.stock[0]
+        self.assertEqual(first.get_visible_state(), second.get_visible_state())
+        self.assertEqual(first.visible_state_hash(), second.visible_state_hash())
+        self.assertNotEqual(first.state_hash(), second.state_hash())
+
+    def test_tableau_generates_each_legal_face_up_suffix(self) -> None:
+        engine = KlondikeEngine()
+        engine.tableau = [
+            [
+                Card("C", 10, True),
+                Card("H", 9, True),
+                Card("S", 8, True),
+                Card("D", 7, True),
+            ],
+            [Card("S", 10, True)],
+            [Card("D", 9, True)],
+            [],
+            [],
+            [],
+            [],
+        ]
+        engine.stock = []
+        engine.waste = []
+        engine.foundations = {suit: [] for suit in SUITS}
+        actions = engine.get_legal_actions()
+        self.assertIn(Action(ActionKind.TABLEAU_TO_TABLEAU, 0, 1, 3), actions)
+        self.assertIn(Action(ActionKind.TABLEAU_TO_TABLEAU, 0, 2, 2), actions)
+
+    def test_action_sources_are_restricted_to_exposed_top_cards(self) -> None:
+        engine = KlondikeEngine()
+        engine.tableau = [
+            [Card("H", 7, True), Card("C", 6, True)],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+        ]
+        engine.stock = []
+        engine.waste = [Card("D", 3, True), Card("S", 2, True)]
+        engine.foundations = {
+            "S": [Card("S", 1, True)],
+            "H": [Card("H", rank, True) for rank in range(1, 7)],
+            "D": [],
+            "C": [Card("C", rank, True) for rank in range(1, 6)],
+        }
+        actions = engine.get_legal_actions()
+        self.assertNotIn(Action(ActionKind.TABLEAU_TO_FOUNDATION, 0, "H"), actions)
+        self.assertIn(Action(ActionKind.TABLEAU_TO_FOUNDATION, 0, "C"), actions)
+        self.assertIn(Action(ActionKind.WASTE_TO_FOUNDATION, "waste", "S"), actions)
+        self.assertNotIn(Action(ActionKind.WASTE_TO_FOUNDATION, "waste", "D"), actions)
+        self.assertTrue(
+            all(action.kind is not ActionKind.DRAW for action in actions)
+        )
+
+    def test_only_foundation_top_can_return_to_tableau(self) -> None:
+        engine = KlondikeEngine()
+        engine.tableau = [
+            [Card("C", 4, True)],
+            [Card("S", 5, True)],
+            [],
+            [],
+            [],
+            [],
+            [],
+        ]
+        engine.stock = []
+        engine.waste = []
+        engine.foundations = {
+            "H": [Card("H", rank, True) for rank in range(1, 5)],
+            "D": [],
+            "S": [],
+            "C": [],
+        }
+        actions = engine.get_legal_actions()
+        self.assertIn(Action(ActionKind.FOUNDATION_TO_TABLEAU, "H", 1), actions)
+        self.assertNotIn(Action(ActionKind.FOUNDATION_TO_TABLEAU, "H", 0), actions)
+
+    def test_exposed_hidden_card_flips_in_same_transition(self) -> None:
+        engine = KlondikeEngine()
+        revealing_action = None
+        source = None
+        for seed in range(100):
+            engine.reset(seed)
+            for action in engine.get_legal_actions():
+                if action.kind not in {
+                    ActionKind.TABLEAU_TO_TABLEAU,
+                    ActionKind.TABLEAU_TO_FOUNDATION,
+                }:
+                    continue
+                pile = engine.tableau[int(action.source)]
+                removed = action.count if action.kind is ActionKind.TABLEAU_TO_TABLEAU else 1
+                if len(pile) > removed and not pile[-removed - 1].face_up:
+                    revealing_action = action
+                    source = int(action.source)
+                    break
+            if revealing_action:
+                break
+        self.assertIsNotNone(revealing_action)
+        hidden_before = engine.hidden_cards
+        result = engine.step(revealing_action)
+        self.assertEqual(engine.steps, 1)
+        self.assertEqual(result.hidden_cards_revealed, 1)
+        self.assertEqual(engine.hidden_cards, hidden_before - 1)
+        self.assertTrue(engine.tableau[source][-1].face_up)
 
     def test_state_hash_is_stable_and_changes_after_move(self) -> None:
         engine = KlondikeEngine()

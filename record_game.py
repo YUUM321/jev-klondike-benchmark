@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument(
         "--jev-option-order", choices=("seeded", "canonical"), default="seeded"
     )
+    parser.add_argument("--jev-option-order-seed", type=int, default=0)
     args = parser.parse_args()
 
     if args.agent == "random":
@@ -41,6 +42,7 @@ def main() -> None:
             base_url=args.jev_base_url,
             model=args.jev_model,
             option_order=args.jev_option_order,
+            option_order_seed=args.jev_option_order_seed,
         )
 
     result, decisions = run_game(
@@ -57,7 +59,7 @@ def main() -> None:
     )
     print(
         f"saved {len(replay['frames'])} frames to {args.output} "
-        f"(result={result.stop_reason}, win={result.win})"
+        f"(result={result.termination_reason}, win={result.win})"
     )
     if result.error:
         raise SystemExit(result.error)

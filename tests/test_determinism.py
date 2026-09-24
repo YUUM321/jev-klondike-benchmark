@@ -28,8 +28,9 @@ class DeterminismTests(unittest.TestCase):
             "hidden_cards_revealed",
             "steps",
             "repeated_states",
-            "unique_states",
-            "stop_reason",
+            "unique_states_visited",
+            "revisit_rate",
+            "termination_reason",
         )
         self.assertEqual(
             tuple(getattr(first, key) for key in comparable),

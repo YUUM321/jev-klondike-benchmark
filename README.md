@@ -12,12 +12,12 @@
 - 暴露的 tableau 暗牌自动翻开；允许 foundation 回撤到 tableau。
 - `benchmark/seeds.txt` 冻结为 0–99，共 100 局。
 - 三个 agent 看见同一批牌局；Random 的策略随机数也由牌局 seed 派生。
-- 引擎持有完整牌局，但 agent 只收到 `get_visible_state()`；暗牌统一为 `XX`。
+- 引擎持有完整牌局，但 runner 只向 agent 传递独立的 `Observation`；其中只有 visible state、公开 step、可见状态 hash 和合法动作标签，暗牌统一为 `XX`。Agent 无法访问 engine、Stock 顺序或暗牌身份。
 - 引擎生成全部合法动作，agent 不能自由生成动作。
 - Jev 使用一个 `Choice` 问题；没有 API fallback。网络错误、无效返回和缺少 key 都记为失败，不会偷偷改成“选第一项”。
-- Jev 的合法动作顺序默认按 `seed + state_hash` 做确定性打乱，避免动作类型总在固定位置造成位置偏差。可用 `--jev-option-order canonical` 做消融实验。
-- 主指标：`win`、`foundation_cards`、`hidden_cards_revealed`、`steps`、`repeated_states`。
-- 额外记录：停止原因、唯一状态数、agent 错误、Jev 模型版本、延迟、usage 和请求哈希。
+- Jev 的合法动作顺序默认只按公开的 `option_order_seed + step + visible_state_hash` 做确定性打乱，不依赖牌局 seed 或完整 state hash。可用 `--jev-option-order canonical` 做消融实验。
+- 主指标：`win`、`foundation_cards`、`hidden_cards_revealed`、`steps`、`repeated_states`、`unique_states_visited` 和 `revisit_rate`。
+- 额外记录：`termination_reason`、agent 错误、Jev 模型版本、延迟、usage 和请求哈希。
 
 Jev 当前是结构化决策模型，不输出自然语言；它的 Choice 接口接收预定义候选项并返回选择、概率分布和 confidence。仓库使用 TypeSafe 的 `POST /v1/systemone` HTTP 合同，而不是 Chat Completions。参考：[TypeSafe SDK](https://github.com/typesafe-ai/typesafe-sdk-js)、[API shape](https://jev-agent.com/api-reference)、[独立游戏 benchmark](https://jev-agent.com/game-benchmark)。
 
@@ -63,6 +63,7 @@ python run_benchmark.py --agents jev --limit 1
 --jev-model jev-latest       请求的模型别名/版本
 --jev-base-url URL           System One API host
 --jev-option-order seeded|canonical
+--jev-option-order-seed 0    公开、固定的候选顺序 seed
 ```
 
 ## 输出
@@ -72,9 +73,10 @@ python run_benchmark.py --agents jev --limit 1
 ```text
 manifest.json                 完整实验配置、seed 和环境信息
 runs.jsonl                    每个 agent × seed 的逐局结果
-summary.csv                   聚合指标
+runs.csv                      逐局指标与 termination_reason
+summary.csv                   聚合指标、终止原因分布与 revisit 指标
 decisions.jsonl               默认只含 Jev 的逐步观察和选择
-high_confidence_losses.jsonl  confidence > 0.9 且最终失败的决策
+high_confidence_losses.jsonl  confidence > 0.9 且最终失败的非 forced 决策
 ```
 
 重放某个失败案例：
@@ -89,7 +91,7 @@ python -m benchmark.replay results/20260924T000000Z/decisions.jsonl --agent jev 
 python -m benchmark.replay results/20260924T000000Z/decisions.jsonl --seed 37 --from-step 35 --to-step 50
 ```
 
-`high_confidence_losses.jsonl` 是候选审查集，不自动声称“这一步就是致败手”。最终失败可能由后续动作或牌局本身造成，需要 replay 人工检查或用搜索 oracle 做反事实分析。
+`high_confidence_losses.jsonl` 是候选审查集，不自动声称“这一步就是致败手”。只有一个合法动作时不会调用 Jev，日志标记 `forced: true` 且 `confidence: null`，不会进入 confidence 或 calibration 分析。最终失败可能由后续动作或牌局本身造成，需要 replay 人工检查或用搜索 oracle 做反事实分析。
 
 ## 网页回放
 
@@ -178,6 +180,10 @@ draw one card from stock
 - 所有生成动作都能合法应用并保持 tableau/foundation 不变量。
 - face-down 身份不会出现在 visible state。
 - stock recycle 恢复正确的 Draw‑1 顺序。
+- 完整 state hash 能区分玩家画面相同但 Stock 内部顺序不同的状态。
+- Agent 接口不暴露 engine 或暗牌，候选顺序不依赖隐藏状态。
+- Tableau 的每个合法 face-up 后缀都能生成，非法来源不会混入。
+- 暴露暗牌在同一个 transition 内自动翻开。
 - win 判断、hash 稳定性和非法动作拒绝。
 - Random 与 Heuristic 在相同 seed 下可复现。
 - Jev 缺 key 时严格失败，不使用 fallback。
