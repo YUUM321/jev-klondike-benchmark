@@ -166,6 +166,7 @@ class JevAgent:
                 "option_order": self.option_order,
                 "request_sha256": request_hash,
                 "latency_ms": latency_ms,
+                "attempts": attempt + 1,
                 "model": response_data.get("model", self.model),
                 "usage": response_data.get("usage"),
                 "request_id": response_data.get("request_id"),

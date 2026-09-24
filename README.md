@@ -18,7 +18,8 @@
 - Jev 使用一个 `Choice` 问题；没有 API fallback。网络错误、无效返回和缺少 key 都记为失败，不会偷偷改成“选第一项”。
 - Jev 的合法动作顺序默认只按公开的 `option_order_seed + step + visible_state_hash` 做确定性打乱，不依赖牌局 seed 或完整 state hash。可用 `--jev-option-order canonical` 做消融实验。
 - 主指标：`win`、`foundation_cards`、`hidden_cards_revealed`、`steps`、`repeated_states`、`unique_states_visited` 和 `revisit_rate`。
-- 额外记录：`termination_reason`、agent 错误、Jev 模型版本、延迟、usage 和请求哈希。
+- 速度指标：整局 `elapsed_seconds`，以及非强制决策的 latency total/mean/median/P95；只有一个合法动作的步骤单独计为 `forced_decisions`，不用于拉低决策延迟。
+- 额外记录：`termination_reason`、agent 错误、Jev 模型版本、usage 和请求哈希。
 
 Jev 当前是结构化决策模型，不输出自然语言；它的 Choice 接口接收预定义候选项并返回选择、概率分布和 confidence。仓库使用 TypeSafe 的 `POST /v1/systemone` HTTP 合同，而不是 Chat Completions。参考：[TypeSafe SDK](https://github.com/typesafe-ai/typesafe-sdk-js)、[API shape](https://jev-agent.com/api-reference)、[独立游戏 benchmark](https://jev-agent.com/game-benchmark)。
 
@@ -47,6 +48,8 @@ python run_benchmark.py --seed-set eval-v0.1 --agents random heuristic
 ```
 
 评测集的生成合同是 `SHA256(namespace + NUL + master_seed + NUL + counter)`，依次取前 8 字节并映射到 `[0, 2^31)`，保留前 100 个不重复值。这里的上界是二的幂，不产生模偏差。该方法不依赖 Python `random` 的具体版本；`manifest.json` 会同时记录 seed 文件哈希和完整生成合同。
+
+计时使用单调高精度时钟包住整个 `agent.choose()`。因此 Jev 数值包含请求编码、API 往返、响应解析、重试和退避，是用户实际感受到的端到端决策延迟；返回日志另存 API 请求区间的 `latency_ms` 和 `attempts`，方便解释长尾。延迟高度依赖运行地区、网络和服务负载，适合展示响应速度并比较同环境下的 Jev 条件，不应被解释为策略质量。
 
 运行真实 Jev：
 
@@ -84,7 +87,7 @@ python run_benchmark.py --agents jev --limit 1
 manifest.json                 完整实验配置、seed set、文件哈希和环境信息
 runs.jsonl                    每个 agent × seed 的逐局结果
 runs.csv                      逐局指标与 termination_reason
-summary.csv                   聚合指标、终止原因分布与 revisit 指标
+summary.csv                   聚合指标、终止原因、revisit 与决策延迟
 decisions.jsonl               默认只含 Jev 的逐步观察和选择
 high_confidence_losses.jsonl  confidence > 0.9 且最终失败的非 forced 决策
 ```
@@ -116,6 +119,7 @@ python -m http.server 8000 -d web
 - 播放、暂停、前后单步、时间轴和 0.5×–4× 速度；
 - stock、waste、foundation 和七列 tableau 的逐帧状态；
 - Jev 选中的动作、confidence、完整候选数和概率前八项；
+- 当前决策耗时；强制动作会明确标记，不混入正式 latency 指标；
 - 翻暗牌、foundation 变化、局面指标和合法动作列表；
 - 键盘空格播放/暂停，左右方向键单步。
 
@@ -220,6 +224,7 @@ draw one card from stock
 - 可用 `python -m benchmark.generate_seed_set --check` 验证评测集未被改写。
 - 同一 seed 上比较 agent，报告逐 seed 的配对差异；100 局胜率接近 50% 时，单一胜率的 95% 抽样误差约为 ±10 个百分点。
 - seed 只固定发牌，不保证 Jev 调用本身确定；v0.1 单次运行需声明这一限制，后续应对每个 seed 重复 Jev 调用以估计策略方差。
+- 速度至少报告非强制决策的 mean、每局 median/P95 和整局耗时；Jev 包含 API/网络延迟，本地基线只是执行成本参照，不把二者的 wall-clock 差异解释成策略能力差异。
 - agent error 不进入胜率分母，但必须单独报告数量。
 - 不把 100 局的差异写成普遍能力结论。
 - 不把 confidence 当成“这一步正确的概率”；单独检验 calibration。

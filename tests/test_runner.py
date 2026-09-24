@@ -5,7 +5,7 @@ import csv
 
 from agents import JevAgent, Observation
 from benchmark.metrics import summarize, write_runs_csv
-from benchmark.runner import run_game
+from benchmark.runner import nearest_rank_percentile, run_game
 from run_benchmark import is_high_confidence_loss
 from solitaire import ActionKind, KlondikeEngine
 
@@ -33,6 +33,10 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("final_result", decisions[0])
         self.assertIn("termination_reason", decisions[0])
         self.assertIn("state_after", decisions[0])
+        self.assertIn("decision_latency_ms", decisions[0])
+        self.assertGreaterEqual(decisions[0]["decision_latency_ms"], 0)
+        self.assertEqual(result.forced_decisions + result.timed_decisions, result.steps)
+        self.assertGreaterEqual(result.decision_latency_ms_total, 0)
         self.assertEqual(
             result.repeated_states + result.unique_states_visited - 1,
             result.steps,
@@ -175,6 +179,8 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("turn_caps", summary)
         self.assertIn("mean_unique_states_visited", summary)
         self.assertIn("mean_revisit_rate", summary)
+        self.assertIn("mean_decision_latency_ms", summary)
+        self.assertIn("mean_game_p95_decision_latency_ms", summary)
         with TemporaryDirectory() as temporary:
             path = Path(temporary) / "runs.csv"
             write_runs_csv(path, [result])
@@ -183,6 +189,13 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(row["termination_reason"], "turn_cap")
             self.assertIn("unique_states_visited", row)
             self.assertIn("revisit_rate", row)
+            self.assertIn("decision_latency_ms_median", row)
+            self.assertIn("decision_latency_ms_p95", row)
+
+    def test_latency_percentile_uses_nearest_rank(self) -> None:
+        self.assertIsNone(nearest_rank_percentile([], 0.95))
+        self.assertEqual(nearest_rank_percentile([4, 1, 3, 2], 0.50), 2)
+        self.assertEqual(nearest_rank_percentile([4, 1, 3, 2], 0.95), 4)
 
 
 if __name__ == "__main__":

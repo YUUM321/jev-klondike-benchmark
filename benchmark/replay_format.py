@@ -34,6 +34,8 @@ def build_replay(
             "legal_actions": initial_actions,
             "events": {"hidden_revealed": 0, "foundation_delta": 0},
             "decision_metadata": {},
+            "forced": False,
+            "decision_latency_ms": None,
         }
     ]
     for index, decision in enumerate(decisions):
@@ -56,6 +58,8 @@ def build_replay(
                 },
                 "state_hash": decision["state_hash_after"],
                 "decision_metadata": decision["decision_metadata"],
+                "forced": decision["forced"],
+                "decision_latency_ms": decision["decision_latency_ms"],
             }
         )
 

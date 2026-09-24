@@ -131,6 +131,13 @@ def main() -> None:
             "stagnation_steps": args.stagnation_steps,
             "max_steps": args.max_steps,
         },
+        "timing": {
+            "clock": "time.perf_counter_ns",
+            "scope": "wall time inside agent.choose",
+            "forced_decisions_excluded": True,
+            "jev_includes_network_and_retries": True,
+            "percentile_method": "nearest-rank",
+        },
         "jev": {
             "base_url": args.jev_base_url,
             "model_requested": args.jev_model,

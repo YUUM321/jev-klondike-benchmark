@@ -155,6 +155,11 @@ function renderEvents(frame) {
   if (events.hidden_revealed > 0) labels.push(`翻开 ${events.hidden_revealed} 张暗牌`);
   if (events.foundation_delta > 0) labels.push(`Foundation +${events.foundation_delta}`);
   if (events.foundation_delta < 0) labels.push(`Foundation ${events.foundation_delta}`);
+  if (frame.decision_latency_ms != null) {
+    labels.push(frame.forced
+      ? `强制动作 · ${frame.decision_latency_ms.toFixed(2)} ms`
+      : `决策 ${frame.decision_latency_ms.toFixed(1)} ms`);
+  }
   if (!labels.length && frame.step > 0) labels.push("无结构事件");
   for (const text of labels) {
     const chip = document.createElement("span");

@@ -26,6 +26,13 @@ SUMMARY_FIELDS = (
     "mean_repeated_states",
     "mean_unique_states_visited",
     "mean_revisit_rate",
+    "mean_elapsed_seconds",
+    "total_timed_decisions",
+    "total_decision_latency_seconds",
+    "mean_decision_latency_ms",
+    "mean_game_median_decision_latency_ms",
+    "mean_game_p95_decision_latency_ms",
+    "mean_forced_decisions",
     "agent_errors",
 )
 
@@ -46,6 +53,20 @@ def summarize(results: list[GameResult]) -> list[dict[str, str | int | float]]:
             reason: sum(game.termination_reason == reason for game in completed)
             for reason in ("win", "hard_dead_end", "cycle_stagnation", "turn_cap")
         }
+        timed_decisions = sum(game.timed_decisions for game in completed)
+        latency_total_ms = sum(
+            game.decision_latency_ms_total for game in completed
+        )
+        game_medians = [
+            game.decision_latency_ms_median
+            for game in completed
+            if game.decision_latency_ms_median is not None
+        ]
+        game_p95s = [
+            game.decision_latency_ms_p95
+            for game in completed
+            if game.decision_latency_ms_p95 is not None
+        ]
         rows.append(
             {
                 "agent": agent,
@@ -78,6 +99,29 @@ def summarize(results: list[GameResult]) -> list[dict[str, str | int | float]]:
                 ),
                 "mean_revisit_rate": round(
                     sum(game.revisit_rate for game in completed) / divisor, 6
+                ),
+                "mean_elapsed_seconds": round(
+                    sum(game.elapsed_seconds for game in completed) / divisor, 6
+                ),
+                "total_timed_decisions": timed_decisions,
+                "total_decision_latency_seconds": round(latency_total_ms / 1000, 6),
+                "mean_decision_latency_ms": (
+                    round(latency_total_ms / timed_decisions, 6)
+                    if timed_decisions
+                    else ""
+                ),
+                "mean_game_median_decision_latency_ms": (
+                    round(sum(game_medians) / len(game_medians), 6)
+                    if game_medians
+                    else ""
+                ),
+                "mean_game_p95_decision_latency_ms": (
+                    round(sum(game_p95s) / len(game_p95s), 6)
+                    if game_p95s
+                    else ""
+                ),
+                "mean_forced_decisions": round(
+                    sum(game.forced_decisions for game in completed) / divisor, 3
                 ),
                 "agent_errors": len(games) - len(completed),
             }

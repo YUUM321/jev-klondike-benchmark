@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import math
+import statistics
 import time
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -21,8 +23,24 @@ class GameResult:
     unique_states_visited: int
     revisit_rate: float
     termination_reason: str
+    forced_decisions: int
+    timed_decisions: int
+    decision_latency_ms_total: float
+    decision_latency_ms_mean: float | None
+    decision_latency_ms_median: float | None
+    decision_latency_ms_p95: float | None
     elapsed_seconds: float
     error: str | None = None
+
+
+def nearest_rank_percentile(values: list[float], percentile: float) -> float | None:
+    if not values:
+        return None
+    if not 0 < percentile <= 1:
+        raise ValueError("percentile must be in (0, 1]")
+    ordered = sorted(values)
+    rank = max(1, math.ceil(percentile * len(ordered)))
+    return ordered[rank - 1]
 
 
 def run_game(
@@ -41,6 +59,8 @@ def run_game(
     seen = {engine.state_hash()}
     repeated_states = 0
     cycle_stagnant = 0
+    forced_decisions = 0
+    decision_latencies_ms: list[float] = []
     decisions: list[dict[str, Any]] = []
     termination_reason = "turn_cap"
     error: str | None = None
@@ -65,6 +85,8 @@ def run_game(
             step=engine.steps,
             action_labels=dict(zip(actions, legal_labels)),
         )
+        forced = len(actions) == 1
+        decision_started_ns = time.perf_counter_ns()
         try:
             decision = agent.choose(observation, actions)
             if decision.action not in actions:
@@ -73,6 +95,11 @@ def run_game(
             termination_reason = "agent_error"
             error = f"{type(exc).__name__}: {exc}"
             break
+        decision_latency_ms = (time.perf_counter_ns() - decision_started_ns) / 1_000_000
+        if forced:
+            forced_decisions += 1
+        else:
+            decision_latencies_ms.append(decision_latency_ms)
 
         selected_label = engine.action_label(decision.action)
         outcome = engine.step(decision.action)
@@ -97,6 +124,8 @@ def run_game(
                     "confidence": decision.confidence,
                     "probabilities": decision.probabilities,
                     "decision_metadata": decision.metadata,
+                    "forced": forced,
+                    "decision_latency_ms": round(decision_latency_ms, 6),
                     "state_after": engine.visible_text(),
                     "state_after_data": engine.get_visible_state(),
                     "state_hash_after": outcome.state_hash,
@@ -112,6 +141,7 @@ def run_game(
     if engine.is_win():
         termination_reason = "win"
 
+    latency_total = sum(decision_latencies_ms)
     result = GameResult(
         seed=seed,
         agent=agent.name,
@@ -123,6 +153,24 @@ def run_game(
         unique_states_visited=len(seen),
         revisit_rate=round(repeated_states / engine.steps, 6) if engine.steps else 0.0,
         termination_reason=termination_reason,
+        forced_decisions=forced_decisions,
+        timed_decisions=len(decision_latencies_ms),
+        decision_latency_ms_total=round(latency_total, 6),
+        decision_latency_ms_mean=(
+            round(latency_total / len(decision_latencies_ms), 6)
+            if decision_latencies_ms
+            else None
+        ),
+        decision_latency_ms_median=(
+            round(statistics.median(decision_latencies_ms), 6)
+            if decision_latencies_ms
+            else None
+        ),
+        decision_latency_ms_p95=(
+            round(nearest_rank_percentile(decision_latencies_ms, 0.95), 6)
+            if decision_latencies_ms
+            else None
+        ),
         elapsed_seconds=round(time.perf_counter() - started, 6),
         error=error,
     )

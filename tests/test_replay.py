@@ -18,6 +18,8 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(replay["frames"][0]["step"], 0)
         self.assertIsNone(replay["frames"][0]["action"])
         self.assertEqual(replay["frames"][-1]["step"], result.steps)
+        self.assertIsNone(replay["frames"][0]["decision_latency_ms"])
+        self.assertGreaterEqual(replay["frames"][1]["decision_latency_ms"], 0)
 
     def test_initial_replay_frame_does_not_leak_hidden_cards(self) -> None:
         result, decisions = run_game(

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "created_at_utc": "2026-09-24T08:40:50.397848+00:00",
+  "created_at_utc": "2026-09-24T08:56:56.154755+00:00",
   "game": {
     "name": "Klondike Solitaire",
     "variant": "Draw-1",
@@ -18,7 +18,13 @@
     "unique_states_visited": 14,
     "revisit_rate": 0.1875,
     "termination_reason": "turn_cap",
-    "elapsed_seconds": 0.005455,
+    "forced_decisions": 0,
+    "timed_decisions": 16,
+    "decision_latency_ms_total": 0.1486,
+    "decision_latency_ms_mean": 0.009288,
+    "decision_latency_ms_median": 0.00745,
+    "decision_latency_ms_p95": 0.031,
+    "elapsed_seconds": 0.002595,
     "error": null
   },
   "frames": [
@@ -91,7 +97,9 @@
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "decision_metadata": {}
+      "decision_metadata": {},
+      "forced": false,
+      "decision_latency_ms": null
     },
     {
       "step": 1,
@@ -163,7 +171,9 @@
       "state_hash": "bbce8bf39249a31111020208bcd3168dd5db09d709bd38625c3d190da45b256a",
       "decision_metadata": {
         "heuristic_score": 205
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.031
     },
     {
       "step": 2,
@@ -235,7 +245,9 @@
       "state_hash": "367e2b64092abf0761c47f2a08d1d1148f96b41e4d0edcaa4af8bad4c5fde61b",
       "decision_metadata": {
         "heuristic_score": 155
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0127
     },
     {
       "step": 3,
@@ -307,7 +319,9 @@
       "state_hash": "6a6824ae541575e05d564c3214bd4c5d7f0b6620bca2a3a89348719ade2c7809",
       "decision_metadata": {
         "heuristic_score": 155
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0097
     },
     {
       "step": 4,
@@ -378,7 +392,9 @@
       "state_hash": "33df20b399ccea7a159b2e2f565b8bfd8e25a3cf73a54ed1d1ad3b5879e1490e",
       "decision_metadata": {
         "heuristic_score": 155
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0102
     },
     {
       "step": 5,
@@ -450,7 +466,9 @@
       "state_hash": "cc4dec2028537e6f54f497e3f8f43ae7c8aab03946cd06baf8df2b4fefae0e4a",
       "decision_metadata": {
         "heuristic_score": 155
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.007
     },
     {
       "step": 6,
@@ -522,7 +540,9 @@
       "state_hash": "bfd7cca128c7c46d453c6dbe0d9f2bdab95d751b6d25e750772f42d07bf1af4c",
       "decision_metadata": {
         "heuristic_score": 155
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0085
     },
     {
       "step": 7,
@@ -594,7 +614,9 @@
       "state_hash": "3a6b0cea72a2924342c027c2a392130aadba11c918e5c05e30d66df730184919",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0081
     },
     {
       "step": 8,
@@ -666,7 +688,9 @@
       "state_hash": "bfd7cca128c7c46d453c6dbe0d9f2bdab95d751b6d25e750772f42d07bf1af4c",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0079
     },
     {
       "step": 9,
@@ -736,7 +760,9 @@
       "state_hash": "6218ba418f2d7d4c828bd59808288d26e5f09ee4c855041ea378bc5e5d1ead68",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0091
     },
     {
       "step": 10,
@@ -806,7 +832,9 @@
       "state_hash": "89945948a66f0ebaecc95ff60f7cb0be9e0b5d81202856620374aa245cf513c0",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0062
     },
     {
       "step": 11,
@@ -876,7 +904,9 @@
       "state_hash": "6218ba418f2d7d4c828bd59808288d26e5f09ee4c855041ea378bc5e5d1ead68",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0063
     },
     {
       "step": 12,
@@ -946,7 +976,9 @@
       "state_hash": "ee62946c442a957198bdb8c0dabd01cbe9072e93da943af7a450365165c33c28",
       "decision_metadata": {
         "heuristic_score": 20
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0068
     },
     {
       "step": 13,
@@ -1016,7 +1048,9 @@
       "state_hash": "fcb45d78a40b4ee091e86466237f290d6f8c0605113daae6a746261f71970545",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0065
     },
     {
       "step": 14,
@@ -1086,7 +1120,9 @@
       "state_hash": "ee62946c442a957198bdb8c0dabd01cbe9072e93da943af7a450365165c33c28",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.006
     },
     {
       "step": 15,
@@ -1156,7 +1192,9 @@
       "state_hash": "2511a91db0e1c0616f8be25a796e07a836facd584cf10327e32955916b583b71",
       "decision_metadata": {
         "heuristic_score": 20
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0063
     },
     {
       "step": 16,
@@ -1223,7 +1261,9 @@
       "state_hash": "45e327b83571a696b99b8b5f7ebf2ba234ccd1c88e5f59244123ddead2d0fbe2",
       "decision_metadata": {
         "heuristic_score": 35
-      }
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0063
     }
   ]
 }

@@ -75,6 +75,8 @@
         "state": { "$ref": "#/$defs/visibleState" },
         "action": { "type": ["string", "null"] },
         "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "forced": { "type": "boolean" },
+        "decision_latency_ms": { "type": ["number", "null"], "minimum": 0 },
         "probabilities": {
           "type": "object",
           "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
