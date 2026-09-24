@@ -4,5 +4,12 @@ __pycache__/
 .coverage
 .venv/
 .env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
 results/*/
 !results/.gitkeep
+web/replay.json

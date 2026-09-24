@@ -30,6 +30,17 @@ class VisibilityTests(unittest.TestCase):
         self.assertNotIn(first_waste, visible)
         self.assertEqual(engine.get_visible_state()["waste"], engine.waste[-1].code)
 
+    def test_draw_three_exposes_current_packet_but_not_older_packet(self) -> None:
+        engine = KlondikeEngine(draw_count=3)
+        engine.reset(4)
+        engine.step(next(a for a in engine.get_legal_actions() if a.kind.value == "draw"))
+        old_packet = set(engine.get_visible_state()["waste_visible"])
+        engine.step(next(a for a in engine.get_legal_actions() if a.kind.value == "draw"))
+        visible = engine.get_visible_state()
+        self.assertEqual(len(visible["waste_visible"]), 3)
+        self.assertTrue(old_packet.isdisjoint(visible["waste_visible"]))
+        self.assertEqual(visible["waste"], visible["waste_visible"][-1])
+
 
 if __name__ == "__main__":
     unittest.main()

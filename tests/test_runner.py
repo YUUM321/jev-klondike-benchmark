@@ -1,7 +1,10 @@
 import unittest
+from io import BytesIO
 from tempfile import TemporaryDirectory
 from pathlib import Path
 import csv
+from unittest.mock import Mock
+from urllib.error import HTTPError
 
 from agents import JevAgent, Observation
 from benchmark.metrics import summarize, write_runs_csv
@@ -33,6 +36,7 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("final_result", decisions[0])
         self.assertIn("termination_reason", decisions[0])
         self.assertIn("state_after", decisions[0])
+        self.assertIn("public_history", decisions[0])
         self.assertIn("decision_latency_ms", decisions[0])
         self.assertGreaterEqual(decisions[0]["decision_latency_ms"], 0)
         self.assertEqual(result.forced_decisions + result.timed_decisions, result.steps)
@@ -61,6 +65,32 @@ class RunnerTests(unittest.TestCase):
             action_labels=labels,
         )
         with self.assertRaisesRegex(RuntimeError, "no fallback"):
+            agent.choose(observation, actions)
+
+    def test_jev_http_error_preserves_response_body(self) -> None:
+        engine = KlondikeEngine()
+        engine.reset(0)
+        actions = engine.get_legal_actions()
+        observation = Observation(
+            visible_state=engine.get_visible_state(),
+            visible_text=engine.visible_text(),
+            visible_state_hash=engine.visible_state_hash(),
+            step=engine.steps,
+            action_labels={action: engine.action_label(action) for action in actions},
+        )
+        agent = JevAgent(api_key="test-key", retries=2)
+        agent._opener = Mock()
+        agent._opener.open.side_effect = HTTPError(
+            "https://api.typesafe.ai/v1/systemone",
+            403,
+            "Forbidden",
+            {"x-typesafe-request-id": "req_test"},
+            BytesIO(b'{"detail":"quota exceeded"}'),
+        )
+
+        with self.assertRaisesRegex(
+            RuntimeError, r'Jev HTTP 403 Forbidden.*req_test.*quota exceeded'
+        ):
             agent.choose(observation, actions)
 
     def test_agent_receives_observation_not_engine(self) -> None:
@@ -116,6 +146,63 @@ class RunnerTests(unittest.TestCase):
                 }
             )
         )
+
+    def test_agent_error_is_not_a_loss_or_high_confidence_failure(self) -> None:
+        class ErrorAfterOneAgent:
+            name = "error-after-one"
+
+            def reset(self, seed: int) -> None:
+                self.calls = 0
+
+            def choose(self, observation, actions):
+                from agents.base import Decision
+
+                self.calls += 1
+                if self.calls > 1:
+                    raise RuntimeError("simulated failure")
+                return Decision(actions[0], confidence=0.99)
+
+        result, decisions = run_game(
+            ErrorAfterOneAgent(), 0, max_steps=3, capture_decisions=True
+        )
+        self.assertEqual(result.termination_reason, "agent_error")
+        self.assertEqual(decisions[0]["final_result"], "error")
+        self.assertFalse(is_high_confidence_loss(decisions[0]))
+
+    def test_public_history_is_shared_through_observation(self) -> None:
+        class HistoryCaptureAgent:
+            name = "history-capture"
+
+            def reset(self, seed: int) -> None:
+                self.observations = []
+
+            def choose(self, observation, actions):
+                from agents.base import Decision
+
+                self.observations.append(observation)
+                selected = next(
+                    action
+                    for action in actions
+                    if action.kind in {ActionKind.DRAW, ActionKind.RECYCLE}
+                )
+                return Decision(selected)
+
+        agent = HistoryCaptureAgent()
+        run_game(agent, 0, max_steps=30)
+        repeated = next(
+            observation
+            for observation in agent.observations
+            if observation.visible_state_visit_count > 1
+        )
+        self.assertTrue(repeated.actions_tried_from_visible_state)
+        self.assertLessEqual(len(repeated.recent_actions), 8)
+
+    def test_jev_rule_contract_is_explicit(self) -> None:
+        rules = JevAgent._rules_text(3)
+        self.assertIn("without reshuffling", rules)
+        self.assertIn("Only Kings", rules)
+        self.assertIn("flip automatically", rules)
+        self.assertIn("may move back to tableau", rules)
 
     def test_jev_option_order_does_not_depend_on_hidden_state_or_game_seed(self) -> None:
         engine = KlondikeEngine()

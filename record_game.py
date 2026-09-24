@@ -19,6 +19,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=Path("web/replay.json"))
     parser.add_argument("--stagnation-steps", type=int, default=50)
     parser.add_argument("--max-steps", type=int, default=2_000)
+    parser.add_argument("--draw-count", type=int, choices=(1, 3), default=1)
     parser.add_argument("--jev-api-key-env", default="TYPESAFE_API_KEY")
     parser.add_argument("--jev-base-url", default="https://api.typesafe.ai")
     parser.add_argument("--jev-model", default="jev-latest")
@@ -51,8 +52,9 @@ def main() -> None:
         stagnation_steps=args.stagnation_steps,
         max_steps=args.max_steps,
         capture_decisions=True,
+        draw_count=args.draw_count,
     )
-    replay = build_replay(result, decisions)
+    replay = build_replay(result, decisions, draw_count=args.draw_count)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(replay, indent=2, ensure_ascii=False), encoding="utf-8"

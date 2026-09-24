@@ -11,11 +11,16 @@ def main() -> None:
     parser.add_argument("--agent", choices=("random", "heuristic"), default="heuristic")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--max-steps", type=int, default=2_000)
+    parser.add_argument("--draw-count", type=int, choices=(1, 3), default=1)
     args = parser.parse_args()
 
     agent = RandomAgent() if args.agent == "random" else HeuristicAgent()
     result, decisions = run_game(
-        agent, args.seed, max_steps=args.max_steps, capture_decisions=True
+        agent,
+        args.seed,
+        max_steps=args.max_steps,
+        capture_decisions=True,
+        draw_count=args.draw_count,
     )
     for record in decisions:
         print(f"\n=== step {record['step']} ===")

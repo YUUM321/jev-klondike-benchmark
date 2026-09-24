@@ -70,18 +70,22 @@ class StepResult:
 
 
 class KlondikeEngine:
-    """Standard Klondike Draw-1 with unlimited stock recycling.
+    """Klondike Draw-1 or Draw-3 with unlimited stock recycling.
 
     The engine owns the full deal. Public observation methods redact every
     face-down identity. Exposed face-down tableau cards flip automatically.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, *, draw_count: int = 1) -> None:
+        if draw_count not in {1, 3}:
+            raise ValueError("draw_count must be 1 or 3")
+        self.draw_count = draw_count
         self.seed: int | None = None
         self.tableau: list[list[Card]] = [[] for _ in range(7)]
         self.foundations: dict[str, list[Card]] = {suit: [] for suit in SUITS}
         self.stock: list[Card] = []
         self.waste: list[Card] = []
+        self.waste_packets: list[int] = []
         self.steps = 0
 
     def reset(self, seed: int) -> dict[str, Any]:
@@ -93,6 +97,7 @@ class KlondikeEngine:
         self.tableau = [[] for _ in range(7)]
         self.foundations = {suit: [] for suit in SUITS}
         self.waste = []
+        self.waste_packets = []
         self.steps = 0
 
         cursor = 0
@@ -116,7 +121,10 @@ class KlondikeEngine:
         return sum(not card.face_up for pile in self.tableau for card in pile)
 
     def get_visible_state(self) -> dict[str, Any]:
+        packet_size = self._visible_waste_packet_size()
+        waste_visible = [card.code for card in self.waste[-packet_size:]]
         return {
+            "draw_count": self.draw_count,
             "foundation": {
                 suit: (pile[-1].code if pile else "-")
                 for suit, pile in self.foundations.items()
@@ -126,8 +134,29 @@ class KlondikeEngine:
                 for pile in self.tableau
             ],
             "waste": self.waste[-1].code if self.waste else "-",
+            "waste_visible": waste_visible,
             "stock_count": len(self.stock),
         }
+
+    def _visible_waste_packet_size(self) -> int:
+        if not self.waste:
+            return 0
+        if self.waste_packets and sum(self.waste_packets) == len(self.waste):
+            return self.waste_packets[-1]
+        # Compatibility for tests or callers that construct a state directly.
+        return min(self.draw_count, len(self.waste))
+
+    def _normalize_waste_packets(self) -> None:
+        if sum(self.waste_packets) != len(self.waste):
+            self.waste_packets = [len(self.waste)] if self.waste else []
+
+    def _pop_waste(self) -> Card:
+        self._normalize_waste_packets()
+        card = self.waste.pop()
+        self.waste_packets[-1] -= 1
+        if self.waste_packets[-1] == 0:
+            self.waste_packets.pop()
+        return card
 
     def visible_text(self) -> str:
         state = self.get_visible_state()
@@ -138,9 +167,16 @@ class KlondikeEngine:
             f"{index}: {' '.join(pile) if pile else '-'}"
             for index, pile in enumerate(state["tableau"])
         )
+        waste_line = (
+            f"Waste: {state['waste']}"
+            if self.draw_count == 1
+            else "Waste visible: "
+            + (" ".join(state["waste_visible"]) or "-")
+            + f" (playable: {state['waste']})"
+        )
         return (
             f"Foundation:\n{foundation}\n\nTableau:\n{tableau}\n\n"
-            f"Waste: {state['waste']}\nStock: {state['stock_count']}"
+            f"{waste_line}\nStock: {state['stock_count']}"
         )
 
     def visible_state_hash(self) -> str:
@@ -235,7 +271,11 @@ class KlondikeEngine:
 
     def action_label(self, action: Action) -> str:
         if action.kind is ActionKind.DRAW:
-            return "draw one card from stock"
+            return (
+                "draw one card from stock"
+                if self.draw_count == 1
+                else "draw up to 3 cards from stock"
+            )
         if action.kind is ActionKind.RECYCLE:
             return "recycle waste into stock"
         if action.kind is ActionKind.WASTE_TO_TABLEAU:
@@ -281,16 +321,21 @@ class KlondikeEngine:
         """Apply a known-legal action; caller owns validation and invariants."""
 
         if action.kind is ActionKind.DRAW:
-            self.waste.append(replace(self.stock.pop(), face_up=True))
+            self._normalize_waste_packets()
+            drawn = min(self.draw_count, len(self.stock))
+            for _ in range(drawn):
+                self.waste.append(replace(self.stock.pop(), face_up=True))
+            self.waste_packets.append(drawn)
         elif action.kind is ActionKind.RECYCLE:
             self.stock = [
                 replace(card, face_up=False) for card in reversed(self.waste)
             ]
             self.waste.clear()
+            self.waste_packets.clear()
         elif action.kind is ActionKind.WASTE_TO_TABLEAU:
-            self.tableau[int(action.target)].append(self.waste.pop())
+            self.tableau[int(action.target)].append(self._pop_waste())
         elif action.kind is ActionKind.WASTE_TO_FOUNDATION:
-            card = self.waste.pop()
+            card = self._pop_waste()
             self.foundations[card.suit].append(card)
         elif action.kind is ActionKind.TABLEAU_TO_FOUNDATION:
             source = int(action.source)
@@ -331,12 +376,14 @@ class KlondikeEngine:
             return card.suit, card.rank, card.face_up
 
         state = {
+            "draw_count": self.draw_count,
             "tableau": [[encoded(card) for card in pile] for pile in self.tableau],
             "foundation": {
                 suit: [encoded(card) for card in self.foundations[suit]] for suit in SUITS
             },
             "stock": [encoded(card) for card in self.stock],
             "waste": [encoded(card) for card in self.waste],
+            "waste_packets": self.waste_packets,
         }
         raw = json.dumps(state, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
@@ -358,6 +405,10 @@ class KlondikeEngine:
             raise AssertionError("stock cards must be face down")
         if any(not card.face_up for card in self.waste):
             raise AssertionError("waste cards must be face up")
+        if sum(self.waste_packets) != len(self.waste):
+            raise AssertionError("waste packet sizes must cover the waste pile")
+        if any(not 1 <= size <= self.draw_count for size in self.waste_packets):
+            raise AssertionError("invalid waste packet size")
         for suit, pile in self.foundations.items():
             if any(not card.face_up or card.suit != suit for card in pile):
                 raise AssertionError("invalid foundation identity or visibility")

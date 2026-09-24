@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
     <title>Jev × Klondike Replay</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=public-review" />
   </head>
   <body>
     <header class="topbar">
@@ -18,8 +18,10 @@
       </a>
       <div class="top-actions">
         <span id="load-status" class="status-pill">等待 replay</span>
-        <label class="file-button" for="replay-file">打开 replay.json</label>
+        <label class="file-button" for="replay-file">打开单局 Replay</label>
         <input id="replay-file" type="file" accept="application/json,.json" />
+        <label class="file-button file-button-secondary" for="summary-file">打开结果 CSV</label>
+        <input id="summary-file" type="file" accept="text/csv,.csv" />
       </div>
     </header>
 
@@ -86,7 +88,10 @@
               <p class="eyebrow">Decision trace</p>
               <h2>当前决策</h2>
             </div>
-            <span id="confidence-ring" class="confidence-ring">—</span>
+            <div class="decision-status">
+              <button id="state-phase" class="phase-button" type="button" aria-pressed="false" disabled>执行前</button>
+              <span id="confidence-ring" class="confidence-ring">—</span>
+            </div>
           </div>
           <p id="action" class="action-text">载入 replay 后显示动作</p>
           <div id="event-chips" class="event-chips"></div>
@@ -116,17 +121,41 @@
 
         <section class="inspector-section legal-section">
           <button id="legal-toggle" class="legal-toggle" type="button" aria-expanded="false">
-            <span>下一步合法动作</span><span id="legal-count">0</span>
+            <span>当前合法动作</span><span id="legal-count">0</span>
           </button>
           <ol id="legal-actions" class="legal-actions" hidden></ol>
         </section>
       </aside>
     </main>
 
+    <main id="summary-panel" class="summary-panel" hidden aria-label="Benchmark summary">
+      <div class="summary-header">
+        <div>
+          <p class="eyebrow">Benchmark report</p>
+          <h1>Agent 对比结果</h1>
+          <p id="summary-description" class="summary-description">支持 benchmark 生成的 summary.csv 和 runs.csv。</p>
+        </div>
+        <button id="back-to-replay" class="file-button file-button-secondary" type="button">返回 Replay</button>
+      </div>
+      <div id="summary-cards" class="summary-cards"></div>
+      <section class="summary-table-shell" aria-label="Summary metrics table">
+        <div class="section-heading compact">
+          <h2>完整指标</h2>
+          <span id="summary-row-count" class="muted">0 agents</span>
+        </div>
+        <div class="summary-table-wrap">
+          <table id="summary-table" class="summary-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
     <div id="drop-overlay" class="drop-overlay" hidden>
-      <div><strong>释放文件</strong><span>载入 replay.json</span></div>
+      <div><strong>释放文件</strong><span>支持 replay.json、summary.csv 或 runs.csv</span></div>
     </div>
 
-    <script src="app.js" defer></script>
+    <script src="app.js?v=public-review" defer></script>
   </body>
 </html>

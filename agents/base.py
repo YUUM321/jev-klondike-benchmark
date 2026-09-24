@@ -15,6 +15,10 @@ class Observation:
     visible_state_hash: str
     step: int
     action_labels: dict[Action, str]
+    draw_count: int = 1
+    visible_state_visit_count: int = 1
+    actions_tried_from_visible_state: tuple[str, ...] = ()
+    recent_actions: tuple[str, ...] = ()
 
     def label(self, action: Action) -> str:
         return self.action_labels[action]

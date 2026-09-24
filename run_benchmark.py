@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import platform
+import subprocess
 import sys
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -12,6 +13,7 @@ from pathlib import Path
 from agents import HeuristicAgent, JevAgent, RandomAgent
 from benchmark.metrics import summarize, write_runs_csv, write_summary
 from benchmark.runner import run_game
+from benchmark.replay_format import write_replay
 from benchmark.seed_sets import SEED_SET_FILES, read_seed_file, seed_file_sha256
 
 
@@ -21,9 +23,35 @@ ROOT = Path(__file__).resolve().parent
 def is_high_confidence_loss(decision: dict) -> bool:
     return (
         decision.get("final_result") == "loss"
+        and decision.get("termination_reason") != "agent_error"
         and (decision.get("confidence") or 0) > 0.9
         and not decision.get("decision_metadata", {}).get("forced", False)
     )
+
+
+def git_provenance(root: Path) -> dict[str, str | bool | None]:
+    """Capture the exact source version without making Git a runtime requirement."""
+
+    try:
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        dirty = bool(
+            subprocess.run(
+                ["git", "status", "--porcelain", "--untracked-files=normal"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+        )
+        return {"git_commit": commit, "git_dirty": dirty}
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return {"git_commit": None, "git_dirty": None}
 
 
 def build_agent(name: str, args: argparse.Namespace):
@@ -63,6 +91,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="run only the first N seeds")
     parser.add_argument("--stagnation-steps", type=int, default=50)
     parser.add_argument("--max-steps", type=int, default=2_000)
+    parser.add_argument("--draw-count", type=int, choices=(1, 3), default=1)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument(
         "--log-decisions", choices=("jev", "all", "none"), default="jev"
@@ -115,6 +144,7 @@ def main() -> None:
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "python": platform.python_version(),
         "platform": platform.platform(),
+        **git_provenance(ROOT),
         "agents": list(args.agents),
         "seeds": seeds,
         "seed_set": seed_set,
@@ -122,10 +152,18 @@ def main() -> None:
         "seed_file_sha256": seed_file_sha256(seed_path),
         "seed_set_contract": seed_contract,
         "rules": {
-            "variant": "Klondike Draw-1",
+            "variant": f"Klondike Draw-{args.draw_count}",
+            "draw_count": args.draw_count,
             "stock_recycles": "unlimited",
             "tableau_flip": "automatic when exposed",
             "agent_observation": "visible information only",
+            "public_history": {
+                "version": "public-history-v1",
+                "identity": "visible_state_hash only",
+                "visible_state_visit_count": True,
+                "actions_tried_from_visible_state": True,
+                "recent_actions": 8,
+            },
         },
         "termination": {
             "stagnation_steps": args.stagnation_steps,
@@ -169,6 +207,7 @@ def main() -> None:
                     stagnation_steps=args.stagnation_steps,
                     max_steps=args.max_steps,
                     capture_decisions=capture,
+                    draw_count=args.draw_count,
                 )
                 results.append(result)
                 runs_handle.write(json.dumps(asdict(result), sort_keys=True) + "\n")
@@ -178,6 +217,12 @@ def main() -> None:
                     if is_high_confidence_loss(decision):
                         high_confidence_losses.append(decision)
                 decisions_handle.flush()
+                if decisions:
+                    write_replay(
+                        output_dir / "replays" / f"{agent_name}-seed-{seed}.json",
+                        result,
+                        decisions,
+                    )
                 print(
                     f"[{agent_name} {index}/{len(seeds)}] seed={seed} "
                     f"win={result.win} foundation={result.foundation_cards} "

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jev-klondike-benchmark"
 version = "0.1.0"
-description = "A reproducible Jev vs baseline benchmark on Klondike Draw-1"
+description = "A reproducible Jev vs baseline benchmark on Klondike Draw-1 and Draw-3"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

@@ -1,9 +1,10 @@
 {
-  "schema_version": 1,
-  "created_at_utc": "2026-09-24T08:56:56.154755+00:00",
+  "schema_version": 2,
+  "created_at_utc": "2026-09-24T13:18:33.100634+00:00",
   "game": {
     "name": "Klondike Solitaire",
-    "variant": "Draw-1",
+    "variant": "Draw-3",
+    "draw_count": 3,
     "stock_recycles": "unlimited",
     "tableau_flip": "automatic"
   },
@@ -12,25 +13,27 @@
     "agent": "heuristic",
     "win": false,
     "foundation_cards": 1,
-    "hidden_cards_revealed": 6,
-    "steps": 16,
-    "repeated_states": 3,
-    "unique_states_visited": 14,
-    "revisit_rate": 0.1875,
+    "hidden_cards_revealed": 7,
+    "steps": 20,
+    "repeated_states": 4,
+    "unique_states_visited": 17,
+    "revisit_rate": 0.2,
     "termination_reason": "turn_cap",
     "forced_decisions": 0,
-    "timed_decisions": 16,
-    "decision_latency_ms_total": 0.1486,
-    "decision_latency_ms_mean": 0.009288,
-    "decision_latency_ms_median": 0.00745,
-    "decision_latency_ms_p95": 0.031,
-    "elapsed_seconds": 0.002595,
+    "timed_decisions": 20,
+    "decision_latency_ms_total": 0.3095,
+    "decision_latency_ms_mean": 0.015475,
+    "decision_latency_ms_median": 0.0065,
+    "decision_latency_ms_p95": 0.0154,
+    "elapsed_seconds": 0.004006,
+    "draw_count": 3,
     "error": null
   },
   "frames": [
     {
       "step": 0,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
         "foundation": {
           "S": "-",
           "H": "-",
@@ -82,13 +85,70 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "-",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "AS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": null,
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
         "JC: tableau 5 -> tableau 3 (1 card)",
         "AS: tableau 6 -> foundation S"
@@ -98,12 +158,74 @@
         "foundation_delta": 0
       },
       "decision_metadata": {},
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": []
+      },
       "forced": false,
       "decision_latency_ms": null
     },
     {
       "step": 1,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "-",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "AS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -154,30 +276,93 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "AS: tableau 6 -> foundation S",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
-        "JC: tableau 5 -> tableau 3 (1 card)"
+        "JC: tableau 5 -> tableau 3 (1 card)",
+        "AS: tableau 6 -> foundation S"
       ],
       "events": {
         "hidden_revealed": 1,
         "foundation_delta": 1
       },
-      "state_hash": "bbce8bf39249a31111020208bcd3168dd5db09d709bd38625c3d190da45b256a",
+      "state_hash": "d15dd1f06792decdcc1de83b3fc338da9c969a077b19b1b448ebb1f649a2a0c8",
       "decision_metadata": {
         "heuristic_score": 205
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": []
+      },
       "forced": false,
-      "decision_latency_ms": 0.031
+      "decision_latency_ms": 0.1796
     },
     {
       "step": 2,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -228,30 +413,94 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "JC: tableau 5 -> tableau 3 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
-        "6D: tableau 5 -> tableau 2 (1 card)"
+        "JC: tableau 5 -> tableau 3 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
         "foundation_delta": 0
       },
-      "state_hash": "367e2b64092abf0761c47f2a08d1d1148f96b41e4d0edcaa4af8bad4c5fde61b",
+      "state_hash": "abf03da47a82a636bb332d78ff63ef755189758f5b2e816161e7c7e1c2c15d53",
       "decision_metadata": {
         "heuristic_score": 155
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0127
+      "decision_latency_ms": 0.0154
     },
     {
       "step": 3,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -302,30 +551,95 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "6D: tableau 5 -> tableau 2 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
-        "7S 6D: tableau 2 -> tableau 5 (2 cards)",
-        "2C: tableau 4 -> tableau 0 (1 card)"
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "6D: tableau 5 -> tableau 2 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
         "foundation_delta": 0
       },
-      "state_hash": "6a6824ae541575e05d564c3214bd4c5d7f0b6620bca2a3a89348719ade2c7809",
+      "state_hash": "095d180806ff8052d72155f4c92690b23bc3726bedf2761d6ca201cb243994dc",
       "decision_metadata": {
         "heuristic_score": 155
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0097
+      "decision_latency_ms": 0.0086
     },
     {
       "step": 4,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -376,29 +690,96 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "2C: tableau 4 -> tableau 0 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
-        "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+        "2C: tableau 4 -> tableau 0 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
         "foundation_delta": 0
       },
-      "state_hash": "33df20b399ccea7a159b2e2f565b8bfd8e25a3cf73a54ed1d1ad3b5879e1490e",
+      "state_hash": "62902dc3deb3ade6ffac680206c59c0fab5ff038ee2746b7c82efd87fbf015d0",
       "decision_metadata": {
         "heuristic_score": 155
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0102
+      "decision_latency_ms": 0.0084
     },
     {
       "step": 5,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -449,13 +830,154 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "801d69d1e77952bda98f61ccc3fcd297247abae6166d71383cfc35ab38fdee6d",
+      "decision_metadata": {
+        "heuristic_score": 155
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0063
+    },
+    {
+      "step": 6,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "9H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "action": "5S: tableau 2 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
         "5S: tableau 2 -> tableau 4 (1 card)",
         "5S: tableau 2 -> tableau 5 (1 card)"
       ],
@@ -463,16 +985,28 @@
         "hidden_revealed": 1,
         "foundation_delta": 0
       },
-      "state_hash": "cc4dec2028537e6f54f497e3f8f43ae7c8aab03946cd06baf8df2b4fefae0e4a",
+      "state_hash": "7eda86bb40420c51fa85539f0fde2aca2366ed7cab5984a53005cc52d224cc7b",
       "decision_metadata": {
         "heuristic_score": 155
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.007
+      "decision_latency_ms": 0.0072
     },
     {
-      "step": 6,
-      "state": {
+      "step": 7,
+      "state_before": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -523,30 +1057,11 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
-      "action": "5S: tableau 2 -> tableau 5 (1 card)",
-      "confidence": null,
-      "probabilities": {},
-      "legal_actions": [
-        "draw one card from stock",
-        "9H: tableau 2 -> tableau 1 (1 card)",
-        "5S: tableau 5 -> tableau 4 (1 card)"
-      ],
-      "events": {
-        "hidden_revealed": 1,
-        "foundation_delta": 0
-      },
-      "state_hash": "bfd7cca128c7c46d453c6dbe0d9f2bdab95d751b6d25e750772f42d07bf1af4c",
-      "decision_metadata": {
-        "heuristic_score": 155
-      },
-      "forced": false,
-      "decision_latency_ms": 0.0085
-    },
-    {
-      "step": 7,
-      "state": {
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -597,30 +1112,99 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "9H: tableau 2 -> tableau 1 (1 card)",
-        "5S: tableau 4 -> tableau 5 (1 card)"
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "3a6b0cea72a2924342c027c2a392130aadba11c918e5c05e30d66df730184919",
+      "state_hash": "fc81232520c5ad49204df0443c02a1e3634f37e618d60fcb5fe6e784435ec8d3",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0081
+      "decision_latency_ms": 0.0071
     },
     {
       "step": 8,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "9H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -671,30 +1255,100 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "9H: tableau 2 -> tableau 1 (1 card)",
-        "5S: tableau 5 -> tableau 4 (1 card)"
+        "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "bfd7cca128c7c46d453c6dbe0d9f2bdab95d751b6d25e750772f42d07bf1af4c",
+      "state_hash": "7eda86bb40420c51fa85539f0fde2aca2366ed7cab5984a53005cc52d224cc7b",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0079
+      "decision_latency_ms": 0.0069
     },
     {
       "step": 9,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "9H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -744,29 +1398,102 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "9H: tableau 2 -> tableau 1 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "6218ba418f2d7d4c828bd59808288d26e5f09ee4c855041ea378bc5e5d1ead68",
+      "state_hash": "4563a5067711fc84861d8babaf24c69e4bac969b746baa051076d963f0a89216",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0091
+      "decision_latency_ms": 0.0078
     },
     {
       "step": 10,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -816,29 +1543,99 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
-        "5S: tableau 4 -> tableau 5 (1 card)"
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "89945948a66f0ebaecc95ff60f7cb0be9e0b5d81202856620374aa245cf513c0",
+      "state_hash": "38adf21b6c6fb9bf69841f8ba9cb47349949d62ef4858f584304fd53bae5f20b",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0062
+      "decision_latency_ms": 0.0056
     },
     {
       "step": 11,
-      "state": {
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -888,173 +1685,45 @@
           ]
         ],
         "waste": "-",
+        "waste_visible": [],
         "stock_count": 24
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
-        "5S: tableau 5 -> tableau 4 (1 card)"
-      ],
-      "events": {
-        "hidden_revealed": 0,
-        "foundation_delta": 0
-      },
-      "state_hash": "6218ba418f2d7d4c828bd59808288d26e5f09ee4c855041ea378bc5e5d1ead68",
-      "decision_metadata": {
-        "heuristic_score": 35
-      },
-      "forced": false,
-      "decision_latency_ms": 0.0063
-    },
-    {
-      "step": 12,
-      "state": {
-        "foundation": {
-          "S": "AS",
-          "H": "-",
-          "D": "-",
-          "C": "-"
-        },
-        "tableau": [
-          [
-            "3H",
-            "2C"
-          ],
-          [
-            "XX",
-            "10S",
-            "9H"
-          ],
-          [],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "QH",
-            "JC"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "6H"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "8H",
-            "7S",
-            "6D",
-            "5S"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "XX",
-            "XX",
-            "QS"
-          ]
-        ],
-        "waste": "4S",
-        "stock_count": 23
-      },
-      "action": "draw one card from stock",
-      "confidence": null,
-      "probabilities": {},
-      "legal_actions": [
-        "draw one card from stock",
-        "5S: tableau 5 -> tableau 4 (1 card)"
-      ],
-      "events": {
-        "hidden_revealed": 0,
-        "foundation_delta": 0
-      },
-      "state_hash": "ee62946c442a957198bdb8c0dabd01cbe9072e93da943af7a450365165c33c28",
-      "decision_metadata": {
-        "heuristic_score": 20
-      },
-      "forced": false,
-      "decision_latency_ms": 0.0068
-    },
-    {
-      "step": 13,
-      "state": {
-        "foundation": {
-          "S": "AS",
-          "H": "-",
-          "D": "-",
-          "C": "-"
-        },
-        "tableau": [
-          [
-            "3H",
-            "2C"
-          ],
-          [
-            "XX",
-            "10S",
-            "9H"
-          ],
-          [],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "QH",
-            "JC"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "6H",
-            "5S"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "8H",
-            "7S",
-            "6D"
-          ],
-          [
-            "XX",
-            "XX",
-            "XX",
-            "XX",
-            "XX",
-            "QS"
-          ]
-        ],
-        "waste": "4S",
-        "stock_count": 23
-      },
-      "action": "5S: tableau 5 -> tableau 4 (1 card)",
-      "confidence": null,
-      "probabilities": {},
-      "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "fcb45d78a40b4ee091e86466237f290d6f8c0605113daae6a746261f71970545",
+      "state_hash": "4563a5067711fc84861d8babaf24c69e4bac969b746baa051076d963f0a89216",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0065
+      "decision_latency_ms": 0.0052
     },
     {
-      "step": 14,
-      "state": {
+      "step": 12,
+      "state_before": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -1103,30 +1772,12 @@
             "QS"
           ]
         ],
-        "waste": "4S",
-        "stock_count": 23
+        "waste": "-",
+        "waste_visible": [],
+        "stock_count": 24
       },
-      "action": "5S: tableau 4 -> tableau 5 (1 card)",
-      "confidence": null,
-      "probabilities": {},
-      "legal_actions": [
-        "draw one card from stock",
-        "5S: tableau 5 -> tableau 4 (1 card)"
-      ],
-      "events": {
-        "hidden_revealed": 0,
-        "foundation_delta": 0
-      },
-      "state_hash": "ee62946c442a957198bdb8c0dabd01cbe9072e93da943af7a450365165c33c28",
-      "decision_metadata": {
-        "heuristic_score": 35
-      },
-      "forced": false,
-      "decision_latency_ms": 0.006
-    },
-    {
-      "step": 15,
-      "state": {
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -1175,30 +1826,110 @@
             "QS"
           ]
         ],
-        "waste": "6S",
-        "stock_count": 22
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
       },
-      "action": "draw one card from stock",
+      "action": "draw up to 3 cards from stock",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
-        "draw one card from stock",
+        "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "2511a91db0e1c0616f8be25a796e07a836facd584cf10327e32955916b583b71",
+      "state_hash": "88ab629bdf8ad3275bb51889a5a7b088b750cfc13c7749e8627a17129dcfb3d7",
       "decision_metadata": {
         "heuristic_score": 20
       },
+      "public_history": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_actions": [
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0063
+      "decision_latency_ms": 0.0059
     },
     {
-      "step": 16,
-      "state": {
+      "step": 13,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
+      },
+      "state_after": {
+        "draw_count": 3,
         "foundation": {
           "S": "AS",
           "H": "-",
@@ -1247,23 +1978,1105 @@
             "QS"
           ]
         ],
-        "waste": "6S",
-        "stock_count": 22
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
       "confidence": null,
       "probabilities": {},
-      "legal_actions": [],
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
       "events": {
         "hidden_revealed": 0,
         "foundation_delta": 0
       },
-      "state_hash": "45e327b83571a696b99b8b5f7ebf2ba234ccd1c88e5f59244123ddead2d0fbe2",
+      "state_hash": "a97d2ad775e84dfc2a23494bd00d017e9dbbd20d6d5b5f8248b9dcc658f9317d",
       "decision_metadata": {
         "heuristic_score": 35
       },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ]
+      },
       "forced": false,
-      "decision_latency_ms": 0.0063
+      "decision_latency_ms": 0.0057
+    },
+    {
+      "step": 14,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
+      },
+      "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "88ab629bdf8ad3275bb51889a5a7b088b750cfc13c7749e8627a17129dcfb3d7",
+      "decision_metadata": {
+        "heuristic_score": 35
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0049
+    },
+    {
+      "step": 15,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "waste_visible": [
+          "4S",
+          "6S",
+          "QC"
+        ],
+        "stock_count": 21
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "action": "draw up to 3 cards from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "551442c92fd7c90998d2ca5676023d819d16816ee5c44742a4fef92c6b4bf7a4",
+      "decision_metadata": {
+        "heuristic_score": 20
+      },
+      "public_history": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0052
+    },
+    {
+      "step": 16,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "52d95e6a8454179b88c71c01a3395531f28732b98b545cc8edcb556da26ef27b",
+      "decision_metadata": {
+        "heuristic_score": 35
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.005
+    },
+    {
+      "step": 17,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "551442c92fd7c90998d2ca5676023d819d16816ee5c44742a4fef92c6b4bf7a4",
+      "decision_metadata": {
+        "heuristic_score": 35
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0051
+    },
+    {
+      "step": 18,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4C",
+        "waste_visible": [
+          "JH",
+          "JS",
+          "4C"
+        ],
+        "stock_count": 18
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "KD",
+        "waste_visible": [
+          "7H",
+          "4H",
+          "KD"
+        ],
+        "stock_count": 15
+      },
+      "action": "draw up to 3 cards from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "20eb53b2c82eafa6a98e06d5472bb8cff6783c84501b50f361f0856676fd2ae7",
+      "decision_metadata": {
+        "heuristic_score": 20
+      },
+      "public_history": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.005
+    },
+    {
+      "step": 19,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "KD",
+        "waste_visible": [
+          "7H",
+          "4H",
+          "KD"
+        ],
+        "stock_count": 15
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [
+            "KD"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4H",
+        "waste_visible": [
+          "7H",
+          "4H"
+        ],
+        "stock_count": 15
+      },
+      "action": "KD: waste -> tableau 2",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "KD: waste -> tableau 2",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "ab8f0de19714f637633d5a5b9b016217be09146fbb32e879ac16191a4876e800",
+      "decision_metadata": {
+        "heuristic_score": 65
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0067
+    },
+    {
+      "step": 20,
+      "state_before": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [
+            "KD"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4H",
+        "waste_visible": [
+          "7H",
+          "4H"
+        ],
+        "stock_count": 15
+      },
+      "state_after": {
+        "draw_count": 3,
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [
+            "KD",
+            "QS"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2H"
+          ]
+        ],
+        "waste": "4H",
+        "waste_visible": [
+          "7H",
+          "4H"
+        ],
+        "stock_count": 15
+      },
+      "action": "QS: tableau 6 -> tableau 2 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw up to 3 cards from stock",
+        "4H: waste -> tableau 5",
+        "5S: tableau 5 -> tableau 4 (1 card)",
+        "QS: tableau 6 -> tableau 2 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "0bb026ecac88b2e112fe7a1672e351e0812c955cdb57e47d17a3a422fc7a62c7",
+      "decision_metadata": {
+        "heuristic_score": 155
+      },
+      "public_history": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "recent_actions": [
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "KD: waste -> tableau 2"
+        ]
+      },
+      "forced": false,
+      "decision_latency_ms": 0.0079
     }
   ]
 }

@@ -48,11 +48,62 @@ class RulesTests(unittest.TestCase):
             second_draw_order.append(engine.waste[-1].code)
         self.assertEqual(second_draw_order, draw_order)
 
+    def test_draw_three_reveals_packet_with_only_last_card_on_top(self) -> None:
+        engine = KlondikeEngine(draw_count=3)
+        engine.reset(7)
+        expected = [engine.stock[-offset].code for offset in (1, 2, 3)]
+
+        engine.step(Action(ActionKind.DRAW))
+
+        visible = engine.get_visible_state()
+        self.assertEqual(visible["draw_count"], 3)
+        self.assertEqual(visible["waste_visible"], expected)
+        self.assertEqual(visible["waste"], expected[-1])
+        self.assertEqual(len(engine.stock), 21)
+        waste_actions = [
+            action
+            for action in engine.get_legal_actions()
+            if action.kind in {
+                ActionKind.WASTE_TO_FOUNDATION,
+                ActionKind.WASTE_TO_TABLEAU,
+            }
+        ]
+        self.assertTrue(
+            all(engine.action_label(action).startswith(expected[-1]) for action in waste_actions)
+        )
+
+    def test_draw_three_recycle_keeps_order_and_reforms_packets(self) -> None:
+        engine = KlondikeEngine(draw_count=3)
+        engine.reset(12)
+        first_pass = []
+        while engine.stock:
+            engine.step(Action(ActionKind.DRAW))
+            first_pass.append(tuple(engine.get_visible_state()["waste_visible"]))
+        engine.step(Action(ActionKind.RECYCLE))
+        second_pass = []
+        while engine.stock:
+            engine.step(Action(ActionKind.DRAW))
+            second_pass.append(tuple(engine.get_visible_state()["waste_visible"]))
+        self.assertEqual(second_pass, first_pass)
+        self.assertEqual([len(packet) for packet in second_pass], [3] * 8)
+
     def test_state_hash_distinguishes_hidden_stock_order(self) -> None:
         first = KlondikeEngine()
         first.reset(8)
         second = first.clone()
         second.stock[0], second.stock[1] = second.stock[1], second.stock[0]
+        self.assertEqual(first.get_visible_state(), second.get_visible_state())
+        self.assertEqual(first.visible_state_hash(), second.visible_state_hash())
+        self.assertNotEqual(first.state_hash(), second.state_hash())
+
+    def test_draw_three_state_hash_includes_waste_packet_boundaries(self) -> None:
+        first = KlondikeEngine(draw_count=3)
+        first.reset(8)
+        first.step(Action(ActionKind.DRAW))
+        first.step(Action(ActionKind.DRAW))
+        second = first.clone()
+        second.waste_packets = [1, 2, 3]
+
         self.assertEqual(first.get_visible_state(), second.get_visible_state())
         self.assertEqual(first.visible_state_hash(), second.visible_state_hash())
         self.assertNotEqual(first.state_hash(), second.state_hash())

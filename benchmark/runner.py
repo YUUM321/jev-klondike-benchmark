@@ -30,6 +30,7 @@ class GameResult:
     decision_latency_ms_median: float | None
     decision_latency_ms_p95: float | None
     elapsed_seconds: float
+    draw_count: int = 1
     error: str | None = None
 
 
@@ -50,13 +51,18 @@ def run_game(
     stagnation_steps: int = 50,
     max_steps: int = 2_000,
     capture_decisions: bool = False,
+    draw_count: int = 1,
 ) -> tuple[GameResult, list[dict[str, Any]]]:
-    engine = KlondikeEngine()
+    engine = KlondikeEngine(draw_count=draw_count)
     engine.reset(seed)
     agent.reset(seed)
 
     initial_hidden = engine.hidden_cards
     seen = {engine.state_hash()}
+    initial_visible_hash = engine.visible_state_hash()
+    visible_visit_counts = {initial_visible_hash: 1}
+    actions_tried_by_visible_state: dict[str, list[str]] = {}
+    recent_actions: list[str] = []
     repeated_states = 0
     cycle_stagnant = 0
     forced_decisions = 0
@@ -77,13 +83,22 @@ def run_game(
 
         before_state = engine.visible_text()
         before_state_data = engine.get_visible_state()
+        before_visible_hash = engine.visible_state_hash()
         legal_labels = [engine.action_label(action) for action in actions]
         observation = Observation(
             visible_state=before_state_data,
             visible_text=before_state,
-            visible_state_hash=engine.visible_state_hash(),
+            visible_state_hash=before_visible_hash,
             step=engine.steps,
             action_labels=dict(zip(actions, legal_labels)),
+            draw_count=draw_count,
+            visible_state_visit_count=visible_visit_counts.get(
+                before_visible_hash, 1
+            ),
+            actions_tried_from_visible_state=tuple(
+                actions_tried_by_visible_state.get(before_visible_hash, ())
+            ),
+            recent_actions=tuple(recent_actions[-8:]),
         )
         forced = len(actions) == 1
         decision_started_ns = time.perf_counter_ns()
@@ -102,7 +117,17 @@ def run_game(
             decision_latencies_ms.append(decision_latency_ms)
 
         selected_label = engine.action_label(decision.action)
+        tried_here = actions_tried_by_visible_state.setdefault(
+            before_visible_hash, []
+        )
+        if selected_label not in tried_here:
+            tried_here.append(selected_label)
         outcome = engine.step(decision.action)
+        recent_actions.append(selected_label)
+        after_visible_hash = engine.visible_state_hash()
+        visible_visit_counts[after_visible_hash] = (
+            visible_visit_counts.get(after_visible_hash, 0) + 1
+        )
         was_seen = outcome.state_hash in seen
         if was_seen:
             repeated_states += 1
@@ -116,9 +141,19 @@ def run_game(
                 {
                     "seed": seed,
                     "agent": agent.name,
+                    "draw_count": draw_count,
                     "step": engine.steps,
                     "visible_state": before_state,
                     "visible_state_data": before_state_data,
+                    "public_history": {
+                        "visible_state_visit_count": (
+                            observation.visible_state_visit_count
+                        ),
+                        "actions_tried_from_visible_state": list(
+                            observation.actions_tried_from_visible_state
+                        ),
+                        "recent_actions": list(observation.recent_actions),
+                    },
                     "legal_actions": legal_labels,
                     "selected": selected_label,
                     "confidence": decision.confidence,
@@ -172,9 +207,16 @@ def run_game(
             else None
         ),
         elapsed_seconds=round(time.perf_counter() - started, 6),
+        draw_count=draw_count,
         error=error,
     )
-    final_result = "win" if result.win else "loss"
+    final_result = (
+        "win"
+        if result.win
+        else "error"
+        if termination_reason == "agent_error"
+        else "loss"
+    )
     for record in decisions:
         record["final_result"] = final_result
         record["termination_reason"] = termination_reason

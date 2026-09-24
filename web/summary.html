@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Jev × Klondike Benchmark Summary</title>
+    <link rel="stylesheet" href="styles.css?v=public-review" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="Jev Klondike replay home">
+        <span class="brand-mark">J</span>
+        <span><strong>Jev × Klondike</strong><small>Benchmark summary</small></span>
+      </a>
+      <div class="top-actions">
+        <span id="summary-status" class="status-pill">请选择结果 CSV</span>
+        <label class="file-button" for="summary-file">打开 summary.csv / runs.csv</label>
+        <input id="summary-file" type="file" accept="text/csv,.csv" />
+        <a class="file-button file-button-secondary" href="index.html">打开 Replay</a>
+      </div>
+    </header>
+    <main class="summary-panel" aria-label="Benchmark summary">
+      <div class="summary-header">
+        <div>
+          <p class="eyebrow">Benchmark report</p>
+          <h1>Agent 对比结果</h1>
+          <p id="summary-description" class="summary-description">选择 summary.csv 或 runs.csv，页面会在本地读取并展示。</p>
+        </div>
+      </div>
+      <div id="summary-cards" class="summary-cards"></div>
+      <section class="summary-table-shell" aria-label="Summary metrics table">
+        <div class="section-heading compact"><h2>完整指标</h2><span id="summary-row-count" class="muted">0 agents</span></div>
+        <div class="summary-table-wrap">
+          <table id="summary-table" class="summary-table">
+            <thead></thead>
+            <tbody><tr><td class="summary-empty" colspan="12">尚未加载 CSV</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="summary.js?v=2" defer></script>
+  </body>
+</html>

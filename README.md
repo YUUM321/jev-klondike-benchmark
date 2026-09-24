@@ -1,5 +1,11 @@
 # Jev × Klondike Benchmark
 
+[![Tests](https://github.com/YUUM321/jev-klondike-benchmark/actions/workflows/tests.yml/badge.svg)](https://github.com/YUUM321/jev-klondike-benchmark/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+> A reproducible benchmark for studying fast model decisions, limited public
+> memory, and long-horizon failure modes in Klondike Solitaire.
+
 一个可复现的 Klondike Solitaire（经典纸牌接龙）基准，用于比较 **Jev**、随机策略和轻量人工启发式策略在同一批牌局上的表现。
 
 项目关注的不只是胜率，还记录每一步决策、可见状态、候选动作、置信度、响应延迟和失败轨迹，以研究一个核心问题：
@@ -10,7 +16,7 @@
 
 | 模块 | 状态 |
 | --- | --- |
-| Klondike Draw-1 引擎 | 完成 |
+| Klondike Draw-1 / Draw-3 引擎 | 完成 |
 | Random / Heuristic / Jev Agent | 完成 |
 | 可见信息隔离与规则测试 | 完成 |
 | 网页 Replay 播放器 | 完成 |
@@ -21,7 +27,7 @@
 
 ## 为什么选择 Klondike
 
-Klondike 的单步动作通常不难判断是否合法，真正困难的是长期后果：一个眼前合理的动作，可能在十几步后锁死关键牌；而 Draw-1 与无限回收又允许 Agent 在合法状态之间反复循环。
+Klondike 的单步动作通常不难判断是否合法，真正困难的是长期后果：一个眼前合理的动作，可能在十几步后锁死关键牌；Stock 回收还允许 Agent 在合法状态之间反复循环。Draw-3 中，移走一张 Waste 牌会重新改变下一轮的三张分组，进一步增加了规划难度。
 
 这使它适合观察：
 
@@ -35,7 +41,7 @@ Klondike 的单步动作通常不难判断是否合法，真正困难的是长�
 
 ### 游戏规则
 
-- Klondike Draw-1；
+- Klondike Draw-1 或 Draw-3，默认 Draw-1；不同 draw count 视为独立实验条件；
 - Stock 可无限次回收，回收时不洗牌；
 - Tableau 按点数递减、红黑交替排列；
 - 空列只接受 K 或以 K 开头的合法序列；
@@ -54,6 +60,15 @@ Klondike 的单步动作通常不难判断是否合法，真正困难的是长�
 - 不提供完整状态哈希或牌局 seed；
 - 所有合法动作由引擎生成，Agent 只能从候选项中选择。
 
+所有 Agent 还会获得同一份、仅由可见信息计算的公开历史：
+
+- 当前可见局面是第几次到达；
+- 该可见局面下此前尝试过哪些动作；
+- 最近 8 个已执行动作。
+
+公开历史使用 `visible_state_hash` 建立身份，不使用包含暗牌和完整 Stock
+顺序的内部 `state_hash`。Heuristic 不再维护 Jev 无法访问的私有循环记忆。
+
 这个边界由测试覆盖，避免 Jev 或基线策略通过接口意外读取隐藏信息。
 
 ### 对比 Agent
@@ -71,6 +86,10 @@ Goal: maximize the probability of eventually winning this Klondike game.
 Choose exactly one of the supplied legal actions.
 Consider future flexibility, hidden-card revelation, and dead-end risk.
 ```
+
+请求同时附带明确的规则合同，包括 Draw 数量、无洗牌无限回收、空列只接收
+K/K 序列、自动翻开暴露暗牌，以及 Foundation 顶牌可以撤回 Tableau；不依赖
+不同实现可能解释不一致的“standard Klondike”简称。
 
 ## 评测指标
 
@@ -95,6 +114,8 @@ Consider future flexibility, hidden-card revelation, and dead-end risk.
 | `agent_error` | Agent、API 或响应校验失败 |
 
 `cycle_stagnation` 表示当前策略陷入循环，不等价于证明牌局无解。
+`agent_error` 属于未完成运行，不计入胜率分母，也不会进入
+`high_confidence_losses.jsonl`。
 
 ## 快速开始
 
@@ -112,6 +133,7 @@ python run_benchmark.py --agents random heuristic
 
 ```powershell
 python run_game.py --agent heuristic --seed 37
+python run_game.py --agent heuristic --seed 37 --draw-count 3
 ```
 
 ### 运行 Jev
@@ -122,16 +144,46 @@ python run_game.py --agent heuristic --seed 37
 $env:TYPESAFE_API_KEY = "your-key"
 ```
 
+API key 仅在运行时从环境变量读取，不会写入 manifest、Replay 或结果文件。
+仓库只提交值为空的 `.env.example`；本地 `.env`、`.env.*` 和常见私钥文件均被忽略。
+
+如果所在环境通过本地 HTTPS 代理访问 API，先设置代理变量；Jev Agent 会显式使用该代理并兼容 TLS 1.2：
+
+```powershell
+$env:HTTPS_PROXY = "http://proxy-host:port"
+$env:HTTP_PROXY = "http://proxy-host:port"
+```
+
 先在开发集运行一局 smoke test：
 
 ```powershell
 python run_benchmark.py --agents jev --limit 1
 ```
 
+候选动作的排列 seed 会写入 manifest。正式评测前可在少量开发牌局上检查
+位置敏感性，而不必立刻把完整评测成本扩大三倍：
+
+```powershell
+foreach ($orderSeed in 0, 1, 2) {
+  python run_benchmark.py --agents jev --limit 10 `
+    --jev-option-order-seed $orderSeed `
+    --output-dir "results/order-smoke-$orderSeed"
+}
+```
+
+若三个排列的结果差异明显，应把 option-order seed 升级为正式实验变量；否则
+在正式 v0.1 中固定并报告一个 seed。
+
 运行冻结的正式评测集：
 
 ```powershell
-python run_benchmark.py --seed-set eval-v0.1 --agents random heuristic jev
+python run_benchmark.py --seed-set eval-v0.1 --draw-count 1 --agents random heuristic jev
+```
+
+Draw-3 必须作为单独实验运行，不能与 Draw-1 混入同一个 summary：
+
+```powershell
+python run_benchmark.py --seed-set eval-v0.1 --draw-count 3 --agents random heuristic jev
 ```
 
 Jev 会产生真实网络请求，可能带来 API 费用。仓库不会在缺少 key 或请求失败时把其他策略的结果记到 Jev 名下。
@@ -155,6 +207,7 @@ python -m benchmark.generate_seed_set --check
 
 - 实际 seed 列表与 seed 文件 SHA-256；
 - Python、操作系统和完整命令行；
+- Git commit SHA 与运行时工作区是否存在未提交修改；
 - 游戏规则与终止参数；
 - Jev 模型、候选顺序和请求配置；
 - 计时范围及 percentile 算法。
@@ -170,7 +223,10 @@ runs.csv                      逐局指标
 summary.csv                   按 Agent 汇总的结果与延迟
 decisions.jsonl               Jev 的逐步观察、候选项和选择
 high_confidence_losses.jsonl  高置信度失败的候选审查记录
+replays/<agent>-seed-<n>.json 自动生成的逐局网页 Replay
 ```
+
+CSV 用于统计展示，JSONL 用于保存可流式追加的原始记录，`replays/*.json` 才是牌桌播放器直接读取的逐帧文件。三者内容层级不同，不能互相替代。
 
 `high_confidence_losses.jsonl` 只用于定位值得复查的步骤。一次高置信度选择出现在失败牌局中，并不能单独证明该选择导致了失败。
 
@@ -182,13 +238,15 @@ high_confidence_losses.jsonl  高置信度失败的候选审查记录
 python -m http.server 8000 -d web
 ```
 
-打开 [http://localhost:8000](http://localhost:8000) 即可查看内置示例，也可以拖入自己的 `replay.json`。播放器支持：
+打开 [http://localhost:8000](http://localhost:8000) 即可查看内置示例，也可以拖入自己的文件。播放器支持：
 
 - 播放、暂停、单步和时间轴跳转；
 - 0.5×–4× 播放速度；
-- Stock、Waste、Foundation 和七列 Tableau；
+- Stock、Waste、Foundation 和七列 Tableau；Draw-3 的当前三张会扇形显示，最上层牌标记为可用；
 - 合法动作、选中动作、概率与 confidence；
-- 翻牌、Foundation 变化和当前决策耗时。
+- 每一步明确区分动作执行前与执行后牌面，避免概率和画面错位；
+- 翻牌、Foundation 变化、公开历史和当前决策耗时；
+- `summary.csv` 与 `runs.csv` 的 Agent 汇总视图。
 
 录制一局真实 Jev replay：
 
@@ -198,13 +256,27 @@ python record_game.py --agent jev --seed 37 --output web/replay.json
 python -m http.server 8000 -d web
 ```
 
+`web/replay.json` 是本地生成文件，已被 Git 忽略；仓库展示使用经过审查的
+`web/replay.example.json`。
+
 然后访问：
 
 ```text
 http://localhost:8000/?replay=replay.json
 ```
 
-Replay 只保存 Agent 当时可见的状态，不包含暗牌身份，也不会重新执行或推断动作。
+Replay schema v2 同时保存每次决策的 `state_before` 与 `state_after`，并把当时
+的候选动作、概率和选择绑定在同一帧。它只保存 Agent 当时可见的状态，不包含
+暗牌身份，也不会重新执行或推断动作。播放器仍可读取旧 schema v1，并在浏览器
+内转换为新的前后状态语义。
+
+每次启用决策日志的 benchmark 都会自动写出 `replays/`，无需再次调用 Jev。旧结果也可以从原始 JSONL 离线导出：
+
+```powershell
+python -m benchmark.export_replays results/<run-directory>
+```
+
+要直接查看 CSV，可以在主页面选择“打开结果 CSV”，或双击 [`web/summary.html`](web/summary.html)。两者均支持 `summary.csv` 和 `runs.csv`，文件只在浏览器本地读取。
 
 ## 项目结构
 
@@ -228,11 +300,15 @@ run_game.py                    单局本地调试入口
 - 52 张牌始终唯一且不会丢失；
 - 所有生成动作都合法，并在执行后保持规则不变量；
 - 暗牌身份和 Stock 顺序不会进入 Agent Observation；
-- Draw-1 回收后保持正确抽牌顺序且不洗牌；
+- 所有 Agent 获得相同的、仅基于可见状态的有限历史；
+- Draw-1 与 Draw-3 回收后保持正确抽牌顺序且不洗牌；
+- Draw-3 每次显示当前一至三张牌，并且只有 Waste 顶牌可以移动；
 - 完整状态哈希包含 Tableau、Foundation、Stock 和 Waste 的完整顺序；
 - 暴露暗牌在同一次状态转移中自动翻开；
 - Random 与 Heuristic 在相同 seed 下可复现；
 - Jev 缺少 key 或 API 失败时不会静默 fallback；
+- `agent_error` 不会被计作普通 loss 或高置信失败；
+- Replay 中动作前状态、候选动作、选择和动作后状态严格对齐；
 - 正式 seed 集可重新生成、无重复且不与开发集重叠。
 
 运行测试：

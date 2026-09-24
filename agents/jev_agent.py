@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import random
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -43,6 +44,7 @@ class JevAgent:
         retries: int = 2,
         option_order: str = "seeded",
         option_order_seed: int = 0,
+        proxy_url: str | None = None,
     ) -> None:
         self.api_key = api_key or os.getenv(api_key_env)
         self.api_key_env = api_key_env
@@ -54,9 +56,51 @@ class JevAgent:
             raise ValueError("option_order must be 'seeded' or 'canonical'")
         self.option_order = option_order
         self.option_order_seed = option_order_seed
+        self.proxy_url = proxy_url or os.getenv("HTTPS_PROXY") or os.getenv(
+            "https_proxy"
+        )
+        self._opener = self._build_opener()
+
+    def _build_opener(self) -> urllib.request.OpenerDirector:
+        """Build a proxy-aware opener with a Windows local-proxy fallback.
+
+        Some local HTTPS proxies terminate or tunnel TLS 1.3 unreliably for
+        Python's OpenSSL client while accepting TLS 1.2. Keep direct HTTPS
+        connections on the normal context, but cap proxied connections at
+        TLS 1.2 so the benchmark can use the same proxy as command-line tools.
+        """
+
+        proxy_map = (
+            {"http": self.proxy_url, "https": self.proxy_url}
+            if self.proxy_url
+            else urllib.request.getproxies()
+        )
+        context = ssl.create_default_context()
+        if self.proxy_url:
+            context.minimum_version = ssl.TLSVersion.TLSv1_2
+            context.maximum_version = ssl.TLSVersion.TLSv1_2
+        return urllib.request.build_opener(
+            urllib.request.ProxyHandler(proxy_map),
+            urllib.request.HTTPSHandler(context=context),
+        )
 
     def reset(self, seed: int) -> None:
         pass
+
+    @staticmethod
+    def _rules_text(draw_count: int) -> str:
+        draw_rule = (
+            "Draw one card from stock at a time."
+            if draw_count == 1
+            else "Draw up to three cards from stock; only the top waste card is playable."
+        )
+        return (
+            f"{draw_rule} Unlimited stock recycling without reshuffling. "
+            "Tableau builds downward in alternating colors. Only Kings or "
+            "King-led sequences may enter empty tableau columns. Exposed "
+            "tableau cards flip automatically. Foundations build by suit from "
+            "Ace to King, and foundation top cards may move back to tableau."
+        )
 
     def _ordered(self, observation: Observation, actions: list[Action]) -> list[Action]:
         ordered = list(actions)
@@ -100,8 +144,17 @@ class JevAgent:
             "model": self.model,
             "state": {
                 "game": "Klondike Solitaire",
-                "rules": "Draw-1; unlimited stock recycling; standard Klondike rules",
+                "rules": self._rules_text(observation.draw_count),
                 "visible_state": observation.visible_state,
+                "public_history": {
+                    "visible_state_visit_count": (
+                        observation.visible_state_visit_count
+                    ),
+                    "actions_tried_from_visible_state": list(
+                        observation.actions_tried_from_visible_state
+                    ),
+                    "recent_actions": list(observation.recent_actions),
+                },
             },
             "questions": {
                 "action": {
@@ -129,9 +182,22 @@ class JevAgent:
         last_error: Exception | None = None
         for attempt in range(self.retries + 1):
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                with self._opener.open(request, timeout=self.timeout) as response:
                     response_data = json.loads(response.read().decode("utf-8"))
                 break
+            except urllib.error.HTTPError as exc:
+                try:
+                    body = exc.read().decode("utf-8", errors="replace").strip()
+                finally:
+                    exc.close()
+                request_id = exc.headers.get("x-typesafe-request-id")
+                details = f" body={body[:2_000]}" if body else ""
+                request_details = (
+                    f" request_id={request_id}" if request_id else ""
+                )
+                raise JevAPIError(
+                    f"Jev HTTP {exc.code} {exc.reason}{request_details}{details}"
+                ) from exc
             except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
                 last_error = exc
                 if attempt < self.retries:

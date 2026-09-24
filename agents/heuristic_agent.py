@@ -10,11 +10,8 @@ class HeuristicAgent:
 
     name = "heuristic"
 
-    def __init__(self) -> None:
-        self._chosen_by_observation: dict[str, set[str]] = {}
-
     def reset(self, seed: int) -> None:
-        self._chosen_by_observation.clear()
+        pass
 
     @staticmethod
     def _rank(code: str) -> int:
@@ -80,10 +77,7 @@ class HeuristicAgent:
         elif action.kind is ActionKind.RECYCLE:
             score -= 5
 
-        previously_chosen = self._chosen_by_observation.get(
-            observation.visible_state_hash, set()
-        )
-        if action.key in previously_chosen:
+        if observation.label(action) in observation.actions_tried_from_visible_state:
             score -= 200
         else:
             score += 20
@@ -95,9 +89,6 @@ class HeuristicAgent:
             raise ValueError("cannot choose without a legal action")
         scored = [(self._score(observation, action), action) for action in actions]
         selected_score, selected = max(scored, key=lambda item: item[0])
-        self._chosen_by_observation.setdefault(
-            observation.visible_state_hash, set()
-        ).add(selected.key)
         return Decision(
             action=selected,
             metadata={"heuristic_score": selected_score[0]},
