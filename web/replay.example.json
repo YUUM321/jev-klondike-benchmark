@@ -1,0 +1,1226 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-24T08:20:48.634837+00:00",
+  "game": {
+    "name": "Klondike Solitaire",
+    "variant": "Draw-1",
+    "stock_recycles": "unlimited",
+    "tableau_flip": "automatic"
+  },
+  "run": {
+    "seed": 2,
+    "agent": "heuristic",
+    "win": false,
+    "foundation_cards": 1,
+    "hidden_cards_revealed": 6,
+    "steps": 16,
+    "repeated_states": 0,
+    "unique_states": 17,
+    "stop_reason": "turn_cap",
+    "elapsed_seconds": 0.018667,
+    "error": null
+  },
+  "frames": [
+    {
+      "step": 0,
+      "state": {
+        "foundation": {
+          "S": "-",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "AS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": null,
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)",
+        "AS: tableau 6 -> foundation S"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "decision_metadata": {}
+    },
+    {
+      "step": 1,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "AS: tableau 6 -> foundation S",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 1
+      },
+      "state_hash": "bbce8bf39249a31111020208bcd3168dd5db09d709bd38625c3d190da45b256a",
+      "decision_metadata": {
+        "heuristic_score": 205
+      }
+    },
+    {
+      "step": 2,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "JC: tableau 5 -> tableau 3 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "6D: tableau 5 -> tableau 2 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "367e2b64092abf0761c47f2a08d1d1148f96b41e4d0edcaa4af8bad4c5fde61b",
+      "decision_metadata": {
+        "heuristic_score": 155
+      }
+    },
+    {
+      "step": 3,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "2C"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "6D: tableau 5 -> tableau 2 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+        "2C: tableau 4 -> tableau 0 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "6a6824ae541575e05d564c3214bd4c5d7f0b6620bca2a3a89348719ade2c7809",
+      "decision_metadata": {
+        "heuristic_score": 155
+      }
+    },
+    {
+      "step": 4,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "XX",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "2C: tableau 4 -> tableau 0 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "33df20b399ccea7a159b2e2f565b8bfd8e25a3cf73a54ed1d1ad3b5879e1490e",
+      "decision_metadata": {
+        "heuristic_score": 155
+      }
+    },
+    {
+      "step": 5,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "XX",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 2 -> tableau 4 (1 card)",
+        "5S: tableau 2 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "cc4dec2028537e6f54f497e3f8f43ae7c8aab03946cd06baf8df2b4fefae0e4a",
+      "decision_metadata": {
+        "heuristic_score": 155
+      }
+    },
+    {
+      "step": 6,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "9H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "5S: tableau 2 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 1,
+        "foundation_delta": 0
+      },
+      "state_hash": "bfd7cca128c7c46d453c6dbe0d9f2bdab95d751b6d25e750772f42d07bf1af4c",
+      "decision_metadata": {
+        "heuristic_score": 155
+      }
+    },
+    {
+      "step": 7,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S"
+          ],
+          [
+            "9H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "3a6b0cea72a2924342c027c2a392130aadba11c918e5c05e30d66df730184919",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 8,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "9H: tableau 2 -> tableau 1 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "89945948a66f0ebaecc95ff60f7cb0be9e0b5d81202856620374aa245cf513c0",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 9,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "-",
+        "stock_count": 24
+      },
+      "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "6218ba418f2d7d4c828bd59808288d26e5f09ee4c855041ea378bc5e5d1ead68",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 10,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4S",
+        "stock_count": 23
+      },
+      "action": "draw one card from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "ee62946c442a957198bdb8c0dabd01cbe9072e93da943af7a450365165c33c28",
+      "decision_metadata": {
+        "heuristic_score": 20
+      }
+    },
+    {
+      "step": 11,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "4S",
+        "stock_count": 23
+      },
+      "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "fcb45d78a40b4ee091e86466237f290d6f8c0605113daae6a746261f71970545",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 12,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "6S",
+        "stock_count": 22
+      },
+      "action": "draw one card from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "45e327b83571a696b99b8b5f7ebf2ba234ccd1c88e5f59244123ddead2d0fbe2",
+      "decision_metadata": {
+        "heuristic_score": 20
+      }
+    },
+    {
+      "step": 13,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "6S",
+        "stock_count": 22
+      },
+      "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "2511a91db0e1c0616f8be25a796e07a836facd584cf10327e32955916b583b71",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 14,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "stock_count": 21
+      },
+      "action": "draw one card from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "9e1a9a115c397758e6ece622b4d2dfe384c3c890d52713221e4c82c0149a9aad",
+      "decision_metadata": {
+        "heuristic_score": 20
+      }
+    },
+    {
+      "step": 15,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "QC",
+        "stock_count": 21
+      },
+      "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [
+        "draw one card from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "2dda37de8ed9c02c61386bcaab52c9217f74ed003856889d8d249f2135778af2",
+      "decision_metadata": {
+        "heuristic_score": 35
+      }
+    },
+    {
+      "step": 16,
+      "state": {
+        "foundation": {
+          "S": "AS",
+          "H": "-",
+          "D": "-",
+          "C": "-"
+        },
+        "tableau": [
+          [
+            "3H",
+            "2C"
+          ],
+          [
+            "XX",
+            "10S",
+            "9H"
+          ],
+          [],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "QH",
+            "JC"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "6H",
+            "5S"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "8H",
+            "7S",
+            "6D"
+          ],
+          [
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "XX",
+            "QS"
+          ]
+        ],
+        "waste": "JH",
+        "stock_count": 20
+      },
+      "action": "draw one card from stock",
+      "confidence": null,
+      "probabilities": {},
+      "legal_actions": [],
+      "events": {
+        "hidden_revealed": 0,
+        "foundation_delta": 0
+      },
+      "state_hash": "1204f4179269e3087816e85d97d2e0f492e70b291f6b144cbf1a5a4a5e62958c",
+      "decision_metadata": {
+        "heuristic_score": 20
+      }
+    }
+  ]
+}

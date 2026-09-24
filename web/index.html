@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Jev × Klondike Replay</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Jev Klondike replay home">
+        <span class="brand-mark">J</span>
+        <span>
+          <strong>Jev × Klondike</strong>
+          <small>Decision replay laboratory</small>
+        </span>
+      </a>
+      <div class="top-actions">
+        <span id="load-status" class="status-pill">等待 replay</span>
+        <label class="file-button" for="replay-file">打开 replay.json</label>
+        <input id="replay-file" type="file" accept="application/json,.json" />
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="table-shell" aria-label="Klondike table">
+        <div class="table-header">
+          <div>
+            <p class="eyebrow">Recorded run</p>
+            <h1 id="run-title">Klondike Draw‑1</h1>
+          </div>
+          <div class="run-badges">
+            <span id="agent-badge" class="badge badge-agent">—</span>
+            <span id="seed-badge" class="badge">seed —</span>
+            <span id="result-badge" class="badge">—</span>
+          </div>
+        </div>
+
+        <div class="felt">
+          <div class="top-piles">
+            <div class="pile-group draw-piles">
+              <div class="pile-wrap">
+                <span class="pile-label">STOCK</span>
+                <div id="stock" class="card-slot"></div>
+              </div>
+              <div class="pile-wrap">
+                <span class="pile-label">WASTE</span>
+                <div id="waste" class="card-slot"></div>
+              </div>
+            </div>
+            <div id="foundations" class="pile-group foundations" aria-label="Foundations"></div>
+          </div>
+
+          <div id="tableau" class="tableau" aria-label="Tableau"></div>
+          <div class="felt-grain" aria-hidden="true"></div>
+        </div>
+
+        <div class="transport" aria-label="Replay controls">
+          <button id="previous" class="icon-button" type="button" aria-label="Previous step" disabled>‹</button>
+          <button id="play" class="play-button" type="button" disabled>▶ <span>播放</span></button>
+          <button id="next" class="icon-button" type="button" aria-label="Next step" disabled>›</button>
+          <div class="timeline-wrap">
+            <input id="timeline" type="range" min="0" max="0" value="0" aria-label="Replay timeline" />
+            <div class="timeline-meta">
+              <span id="step-label">STEP 0 / 0</span>
+              <span id="progress-label">0%</span>
+            </div>
+          </div>
+          <label class="speed-control">
+            <span>速度</span>
+            <select id="speed">
+              <option value="1600">0.5×</option>
+              <option value="800" selected>1×</option>
+              <option value="400">2×</option>
+              <option value="200">4×</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <aside class="inspector" aria-label="Decision inspector">
+        <section class="inspector-section decision-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Decision trace</p>
+              <h2>当前决策</h2>
+            </div>
+            <span id="confidence-ring" class="confidence-ring">—</span>
+          </div>
+          <p id="action" class="action-text">载入 replay 后显示动作</p>
+          <div id="event-chips" class="event-chips"></div>
+        </section>
+
+        <section class="inspector-section">
+          <div class="section-heading compact">
+            <h2>动作概率</h2>
+            <span id="candidate-count" class="muted">0 candidates</span>
+          </div>
+          <div id="probabilities" class="probability-list">
+            <p class="empty-copy">Jev 的概率分布会显示在这里。</p>
+          </div>
+        </section>
+
+        <section class="inspector-section metrics-section">
+          <div class="section-heading compact">
+            <h2>局面指标</h2>
+          </div>
+          <dl class="metrics-grid">
+            <div><dt>Foundation</dt><dd id="foundation-metric">0 / 52</dd></div>
+            <div><dt>Stock</dt><dd id="stock-metric">0</dd></div>
+            <div><dt>Hidden</dt><dd id="hidden-metric">0</dd></div>
+            <div><dt>States</dt><dd id="states-metric">—</dd></div>
+          </dl>
+        </section>
+
+        <section class="inspector-section legal-section">
+          <button id="legal-toggle" class="legal-toggle" type="button" aria-expanded="false">
+            <span>下一步合法动作</span><span id="legal-count">0</span>
+          </button>
+          <ol id="legal-actions" class="legal-actions" hidden></ol>
+        </section>
+      </aside>
+    </main>
+
+    <div id="drop-overlay" class="drop-overlay" hidden>
+      <div><strong>释放文件</strong><span>载入 replay.json</span></div>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

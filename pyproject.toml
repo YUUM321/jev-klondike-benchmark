@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jev-klondike-benchmark"
+version = "0.1.0"
+description = "A reproducible Jev vs baseline benchmark on Klondike Draw-1"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Benchmark contributors" }]
+dependencies = []
+
+[tool.setuptools]
+packages = ["solitaire", "agents", "benchmark"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
