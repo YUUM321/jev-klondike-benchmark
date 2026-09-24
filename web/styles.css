@@ -182,10 +182,6 @@ h2 { margin-bottom: 0; font-size: 15px; }
 .stock-count { position: absolute; right: -7px; bottom: -7px; min-width: 25px; height: 25px; display: grid; place-items: center; padding: 0 6px; border-radius: 999px; background: var(--lime); color: #122016; font-size: 11px; font-weight: 900; z-index: 4; }
 .tableau-card { position: absolute; left: 50%; top: calc(var(--i) * 27px); transform: translateX(-50%); }
 .tableau-card.back + .tableau-card { }
-.card.enter:not(.tableau-card) { animation: card-in .24s ease-out both; }
-.tableau-card.enter { animation: deal-in .24s ease-out both; }
-@keyframes card-in { from { transform: translateY(-5px); } to { transform: translateY(0); } }
-@keyframes deal-in { from { transform: translate(-50%, -5px); } to { transform: translate(-50%, 0); } }
 .empty-slot { width: var(--card-w); height: var(--card-h); margin: 0 auto; border: 1px dashed rgba(255,255,255,.2); border-radius: 8px; }
 
 .transport {

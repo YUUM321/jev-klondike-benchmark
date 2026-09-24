@@ -24,7 +24,7 @@ function parseCard(code) {
 
 function makeCard(code, { tableau = false, index = 0 } = {}) {
   const card = document.createElement("div");
-  card.className = `card enter${tableau ? " tableau-card" : ""}`;
+  card.className = `card${tableau ? " tableau-card" : ""}`;
   if (tableau) card.style.setProperty("--i", index);
   if (code === "XX") {
     card.classList.add("back");
