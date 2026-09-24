@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import platform
@@ -13,6 +12,7 @@ from pathlib import Path
 from agents import HeuristicAgent, JevAgent, RandomAgent
 from benchmark.metrics import summarize, write_runs_csv, write_summary
 from benchmark.runner import run_game
+from benchmark.seed_sets import SEED_SET_FILES, read_seed_file, seed_file_sha256
 
 
 ROOT = Path(__file__).resolve().parent
@@ -24,17 +24,6 @@ def is_high_confidence_loss(decision: dict) -> bool:
         and (decision.get("confidence") or 0) > 0.9
         and not decision.get("decision_metadata", {}).get("forced", False)
     )
-
-
-def read_seeds(path: Path) -> list[int]:
-    seeds = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.partition("#")[0].strip()
-        if line:
-            seeds.append(int(line))
-    if len(seeds) != len(set(seeds)):
-        raise ValueError("seed file contains duplicates")
-    return seeds
 
 
 def build_agent(name: str, args: argparse.Namespace):
@@ -64,7 +53,13 @@ def main() -> None:
         default=("random", "heuristic"),
         help="Jev is opt-in because it makes paid network calls",
     )
-    parser.add_argument("--seeds", type=Path, default=ROOT / "benchmark" / "seeds.txt")
+    seed_group = parser.add_mutually_exclusive_group()
+    seed_group.add_argument(
+        "--seed-set",
+        choices=tuple(SEED_SET_FILES),
+        help="named frozen set; default is dev to avoid accidental eval-set tuning",
+    )
+    seed_group.add_argument("--seeds", type=Path, help="custom seed file")
     parser.add_argument("--limit", type=int, help="run only the first N seeds")
     parser.add_argument("--stagnation-steps", type=int, default=50)
     parser.add_argument("--max-steps", type=int, default=2_000)
@@ -88,7 +83,9 @@ def main() -> None:
             f"{args.jev_api_key_env} is not set. Refusing to label a fallback as Jev."
         )
 
-    seeds = read_seeds(args.seeds)
+    seed_set = args.seed_set or ("custom" if args.seeds else "dev")
+    seed_path = args.seeds or SEED_SET_FILES[seed_set]
+    seeds = read_seed_file(seed_path)
     if args.limit is not None:
         seeds = seeds[: args.limit]
     if not seeds:
@@ -98,7 +95,20 @@ def main() -> None:
     output_dir = args.output_dir or ROOT / "results" / run_id
     output_dir.mkdir(parents=True, exist_ok=False)
 
-    seed_bytes = args.seeds.read_bytes()
+    if seed_set == "eval-v0.1":
+        seed_contract = json.loads(
+            seed_path.with_suffix(".json").read_text(encoding="utf-8")
+        )
+    elif seed_set == "dev":
+        seed_contract = {
+            "seed_set": "dev",
+            "role": "development",
+            "held_out": False,
+            "note": "These deals influenced tests and heuristic development.",
+        }
+    else:
+        seed_contract = None
+
     manifest = {
         "schema_version": 1,
         "run_id": run_id,
@@ -107,8 +117,10 @@ def main() -> None:
         "platform": platform.platform(),
         "agents": list(args.agents),
         "seeds": seeds,
-        "seed_file": str(args.seeds.resolve()),
-        "seed_file_sha256": hashlib.sha256(seed_bytes).hexdigest(),
+        "seed_set": seed_set,
+        "seed_file": str(seed_path.resolve()),
+        "seed_file_sha256": seed_file_sha256(seed_path),
+        "seed_set_contract": seed_contract,
         "rules": {
             "variant": "Klondike Draw-1",
             "stock_recycles": "unlimited",

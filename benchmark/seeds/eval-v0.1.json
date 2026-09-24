@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "seed_set": "eval-v0.1",
+  "role": "held-out evaluation",
+  "selection_uses_agent_results": false,
+  "algorithm": "sha256-counter-v1",
+  "algorithm_definition": "candidate = uint64_be(SHA256(namespace + NUL + master_seed + NUL + decimal_counter)[0:8]) mod upper_bound; keep first count unique values",
+  "namespace": "jev-klondike/eval-v0.1",
+  "master_seed": "20260924",
+  "counter_start": 0,
+  "upper_bound_exclusive": 2147483648,
+  "count": 100,
+  "seed_file": "eval-v0.1.txt",
+  "seed_file_sha256": "0209d9a2d8bf67cda6fe52fb20585937f841f307d891af2bd832a3d76b73a90f"
+}

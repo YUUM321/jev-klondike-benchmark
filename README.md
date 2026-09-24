@@ -10,7 +10,8 @@
 
 - Klondike Draw‑1，stock 无限次回收。
 - 暴露的 tableau 暗牌自动翻开；允许 foundation 回撤到 tableau。
-- `benchmark/seeds.txt` 冻结为 0–99，共 100 局。
+- `benchmark/seeds/dev.txt` 是已经影响过实现和启发式的开发集（0–99）；它不再冒充未见测试集。
+- `benchmark/seeds/eval-v0.1.txt` 是正式冻结的 100 局评测集，由公开 master seed 和版本无关的 SHA-256 算法生成，未依据任何 agent 结果筛选。
 - 三个 agent 看见同一批牌局；Random 的策略随机数也由牌局 seed 派生。
 - 引擎持有完整牌局，但 runner 只向 agent 传递独立的 `Observation`；其中只有 visible state、公开 step、可见状态 hash 和合法动作标签，暗牌统一为 `XX`。Agent 无法访问 engine、Stock 顺序或暗牌身份。
 - 引擎生成全部合法动作，agent 不能自由生成动作。
@@ -39,11 +40,19 @@ python -m unittest discover -s tests -v
 python run_benchmark.py --agents random heuristic
 ```
 
+默认使用 `dev`，防止开发时意外反复查看正式评测集。规则、prompt 和 agent 全部冻结后，正式运行必须显式指定：
+
+```powershell
+python run_benchmark.py --seed-set eval-v0.1 --agents random heuristic
+```
+
+评测集的生成合同是 `SHA256(namespace + NUL + master_seed + NUL + counter)`，依次取前 8 字节并映射到 `[0, 2^31)`，保留前 100 个不重复值。这里的上界是二的幂，不产生模偏差。该方法不依赖 Python `random` 的具体版本；`manifest.json` 会同时记录 seed 文件哈希和完整生成合同。
+
 运行真实 Jev：
 
 ```powershell
 $env:TYPESAFE_API_KEY = "your-key"
-python run_benchmark.py --agents random heuristic jev
+python run_benchmark.py --seed-set eval-v0.1 --agents random heuristic jev
 ```
 
 Jev 是付费网络调用，所以默认命令只跑本地两个 baseline；必须显式把 `jev` 加到 `--agents`。先做一局 smoke test：
@@ -55,7 +64,8 @@ python run_benchmark.py --agents jev --limit 1
 可用参数：
 
 ```text
---seeds PATH                 指定冻结 seed 文件
+--seed-set dev|eval-v0.1     使用仓库内的命名 seed 集（默认 dev）
+--seeds PATH                 使用自定义 seed 文件；不能与 --seed-set 同用
 --limit N                    只跑前 N 局
 --stagnation-steps 50        软死局窗口
 --max-steps 2000             每局安全上限
@@ -71,7 +81,7 @@ python run_benchmark.py --agents jev --limit 1
 每次运行创建独立的 `results/<UTC timestamp>/`：
 
 ```text
-manifest.json                 完整实验配置、seed 和环境信息
+manifest.json                 完整实验配置、seed set、文件哈希和环境信息
 runs.jsonl                    每个 agent × seed 的逐局结果
 runs.csv                      逐局指标与 termination_reason
 summary.csv                   聚合指标、终止原因分布与 revisit 指标
@@ -145,7 +155,11 @@ benchmark/runner.py           终止条件与逐步日志
 benchmark/metrics.py          聚合结果
 benchmark/replay.py           文本 replay
 benchmark/replay_format.py    稳定的网页 replay schema
-benchmark/seeds.txt           冻结的 100 个 seed
+benchmark/seeds/dev.txt       0–99 开发集，不用于最终无泄漏评测
+benchmark/seeds/eval-v0.1.txt 正式冻结的 100 局评测集
+benchmark/seeds/eval-v0.1.json 生成合同与 seed 文件 SHA-256
+benchmark/seed_sets.py        稳定 seed 生成与读取逻辑
+benchmark/generate_seed_set.py 重现/校验正式评测集
 tests/                        规则、可见性、确定性和 runner 测试
 run_game.py                   单局本地调试
 run_benchmark.py              完整实验入口
@@ -202,6 +216,10 @@ draw one card from stock
 ## 结果发布检查表
 
 - 公布 `manifest.json`、`runs.jsonl`，不要只贴 summary。
+- 正式结果只使用 `--seed-set eval-v0.1`；不得按胜负、难度或异常程度删除牌局。
+- 可用 `python -m benchmark.generate_seed_set --check` 验证评测集未被改写。
+- 同一 seed 上比较 agent，报告逐 seed 的配对差异；100 局胜率接近 50% 时，单一胜率的 95% 抽样误差约为 ±10 个百分点。
+- seed 只固定发牌，不保证 Jev 调用本身确定；v0.1 单次运行需声明这一限制，后续应对每个 seed 重复 Jev 调用以估计策略方差。
 - agent error 不进入胜率分母，但必须单独报告数量。
 - 不把 100 局的差异写成普遍能力结论。
 - 不把 confidence 当成“这一步正确的概率”；单独检验 calibration。

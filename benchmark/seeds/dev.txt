@@ -1,4 +1,4 @@
-# Frozen v0.1 benchmark set. Do not edit after publishing results.
+# Development-only seeds. These deals have influenced tests and heuristics.
 0
 1
 2
