@@ -12,6 +12,27 @@ from solitaire import KlondikeEngine
 
 
 class ReplayTests(unittest.TestCase):
+    def test_public_example_matches_current_replay_contract(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads(
+            (root / "web" / "replay.schema.json").read_text(encoding="utf-8")
+        )
+        replay = json.loads(
+            (root / "web" / "replay.example.json").read_text(encoding="utf-8")
+        )
+
+        self.assertEqual(
+            replay["schema_version"],
+            schema["properties"]["schema_version"]["const"],
+        )
+        self.assertIn("draw_rate", replay["run"])
+        self.assertIn("recycle_rate", replay["run"])
+        self.assertIn("max_foundation_cards_seen", replay["run"])
+        for frame in replay["frames"]:
+            self.assertIn("action_kind", frame)
+            self.assertIn("progress_before", frame)
+            self.assertIn("progress_after", frame)
+
     def test_replay_has_initial_frame_and_one_frame_per_action(self) -> None:
         result, decisions = run_game(
             HeuristicAgent(), 2, max_steps=5, capture_decisions=True
@@ -61,7 +82,33 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(frame["state_before"], decision["visible_state_data"])
         self.assertEqual(frame["state_after"], decision["state_after_data"])
         self.assertEqual(frame["legal_actions"], decision["legal_actions"])
+        self.assertEqual(frame["legal_actions_before"], decision["legal_actions"])
+        self.assertEqual(
+            frame["legal_actions_after"], decision["legal_actions_after"]
+        )
+        self.assertEqual(
+            frame["public_history_after"], decision["public_history_after"]
+        )
         self.assertEqual(frame["action"], decision["selected"])
+        self.assertEqual(frame["action_kind"], decision["action_kind"])
+        self.assertEqual(frame["progress_before"], decision["progress"])
+        self.assertEqual(frame["progress_after"], decision["progress_after"])
+        self.assertEqual(frame["policy_forced"], decision["policy_forced"])
+
+    def test_old_decision_logs_reconstruct_after_phase_context(self) -> None:
+        result, decisions = run_game(
+            HeuristicAgent(), 2, max_steps=3, capture_decisions=True, draw_count=3
+        )
+        for decision in decisions:
+            decision.pop("legal_actions_after")
+            decision.pop("public_history_after")
+        replay = build_replay(result, decisions)
+        self.assertIn("legal_actions_after", replay["frames"][-1])
+        self.assertIn("public_history_after", replay["frames"][-1])
+        self.assertGreaterEqual(
+            replay["frames"][-1]["public_history_after"]["visible_state_visit_count"],
+            1,
+        )
 
     def test_existing_benchmark_logs_export_without_rerunning_agent(self) -> None:
         result, decisions = run_game(

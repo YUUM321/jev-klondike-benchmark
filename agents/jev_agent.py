@@ -27,11 +27,23 @@ class JevAgent:
     """
 
     name = "jev"
-    INSTRUCTIONS = (
+    TLS_VERSION = "TLSv1.2"
+    CONTEXT_MODE = "history"
+    RAW_INSTRUCTIONS = (
         "Goal: maximize the probability of eventually winning this Klondike game. "
         "Choose exactly one of the supplied legal actions. Consider future "
         "flexibility, hidden-card revelation, and dead-end risk."
     )
+    HISTORY_INSTRUCTIONS = (
+        f"{RAW_INSTRUCTIONS} Use the supplied public history as memory across "
+        "decisions."
+    )
+    PROGRESS_INSTRUCTIONS = (
+        f"{HISTORY_INSTRUCTIONS} Progress indicators are observable facts, not a "
+        "reward score. Use them to distinguish structural progress from repeated "
+        "or merely novel rearrangements."
+    )
+    INSTRUCTIONS = HISTORY_INSTRUCTIONS
 
     def __init__(
         self,
@@ -62,13 +74,7 @@ class JevAgent:
         self._opener = self._build_opener()
 
     def _build_opener(self) -> urllib.request.OpenerDirector:
-        """Build a proxy-aware opener with a Windows local-proxy fallback.
-
-        Some local HTTPS proxies terminate or tunnel TLS 1.3 unreliably for
-        Python's OpenSSL client while accepting TLS 1.2. Keep direct HTTPS
-        connections on the normal context, but cap proxied connections at
-        TLS 1.2 so the benchmark can use the same proxy as command-line tools.
-        """
+        """Build a proxy-aware opener with a reproducible TLS 1.2 transport."""
 
         proxy_map = (
             {"http": self.proxy_url, "https": self.proxy_url}
@@ -76,9 +82,8 @@ class JevAgent:
             else urllib.request.getproxies()
         )
         context = ssl.create_default_context()
-        if self.proxy_url:
-            context.minimum_version = ssl.TLSVersion.TLSv1_2
-            context.maximum_version = ssl.TLSVersion.TLSv1_2
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.maximum_version = ssl.TLSVersion.TLSv1_2
         return urllib.request.build_opener(
             urllib.request.ProxyHandler(proxy_map),
             urllib.request.HTTPSHandler(context=context),
@@ -115,6 +120,57 @@ class JevAgent:
             random.Random(order_seed).shuffle(ordered)
         return ordered
 
+    def _criterion_text(self, observation: Observation, action: Action) -> str:
+        label = observation.label(action)
+        if self.CONTEXT_MODE == "raw":
+            return label
+        attempts = observation.action_attempt_counts.get(label, 0)
+        if attempts == 0:
+            return f"{label} | memory: untried from this visible state"
+        outcomes = observation.action_outcome_counts.get(label, {})
+        outcome_text = ", ".join(
+            f"{state} x{count}" for state, count in sorted(outcomes.items())
+        )
+        return (
+            f"{label} | memory: tried {attempts} time(s) from this visible state; "
+            f"observed outcomes: {outcome_text or 'none recorded'}"
+        )
+
+    @staticmethod
+    def _public_history(observation: Observation) -> dict[str, Any]:
+        return {
+            "version": "public-history-v2",
+            "visible_state_visit_count": observation.visible_state_visit_count,
+            "actions_tried_from_visible_state": list(
+                observation.actions_tried_from_visible_state
+            ),
+            "action_attempt_counts": dict(observation.action_attempt_counts),
+            "action_outcome_counts": {
+                label: dict(outcomes)
+                for label, outcomes in observation.action_outcome_counts.items()
+            },
+            "steps_since_new_visible_state": (
+                observation.steps_since_new_visible_state
+            ),
+            "recent_actions": list(observation.recent_actions),
+            "recent_transitions": list(observation.recent_transitions),
+        }
+
+    def _state_payload(self, observation: Observation) -> dict[str, Any]:
+        state: dict[str, Any] = {
+            "game": "Klondike Solitaire",
+            "rules": self._rules_text(observation.draw_count),
+            "visible_state": observation.visible_state,
+        }
+        if self.CONTEXT_MODE in {"history", "progress", "guard"}:
+            state["public_history"] = self._public_history(observation)
+        if self.CONTEXT_MODE == "progress":
+            state["progress"] = {
+                "version": "observable-progress-v1",
+                **observation.progress,
+            }
+        return state
+
     def choose(self, observation: Observation, actions: list[Action]) -> Decision:
         if not actions:
             raise ValueError("cannot choose without a legal action")
@@ -123,7 +179,11 @@ class JevAgent:
                 action=actions[0],
                 confidence=None,
                 probabilities={},
-                metadata={"forced": True, "candidate_count": 1},
+                metadata={
+                    "forced": True,
+                    "candidate_count": 1,
+                    "context_mode": self.CONTEXT_MODE,
+                },
             )
         if not self.api_key:
             raise JevAPIError(
@@ -137,25 +197,12 @@ class JevAgent:
         ordered = self._ordered(observation, actions)
         option_map = {f"a{index:03d}": action for index, action in enumerate(ordered)}
         criteria = {
-            option_id: observation.label(action)
+            option_id: self._criterion_text(observation, action)
             for option_id, action in option_map.items()
         }
         payload = {
             "model": self.model,
-            "state": {
-                "game": "Klondike Solitaire",
-                "rules": self._rules_text(observation.draw_count),
-                "visible_state": observation.visible_state,
-                "public_history": {
-                    "visible_state_visit_count": (
-                        observation.visible_state_visit_count
-                    ),
-                    "actions_tried_from_visible_state": list(
-                        observation.actions_tried_from_visible_state
-                    ),
-                    "recent_actions": list(observation.recent_actions),
-                },
-            },
+            "state": self._state_payload(observation),
             "questions": {
                 "action": {
                     "type": "choice",
@@ -218,7 +265,7 @@ class JevAgent:
 
         raw_probabilities = answer.get("probabilities", {})
         probabilities = {
-            criteria[option_id]: float(probability)
+            observation.label(option_map[option_id]): float(probability)
             for option_id, probability in raw_probabilities.items()
             if option_id in criteria
         }
@@ -229,6 +276,7 @@ class JevAgent:
             metadata={
                 "forced": False,
                 "candidate_count": len(actions),
+                "context_mode": self.CONTEXT_MODE,
                 "option_order": self.option_order,
                 "request_sha256": request_hash,
                 "latency_ms": latency_ms,
@@ -238,3 +286,78 @@ class JevAgent:
                 "request_id": response_data.get("request_id"),
             },
         )
+
+
+class JevRawAgent(JevAgent):
+    """Jev with only the current visible state, rules, and legal actions."""
+
+    name = "jev_raw"
+    CONTEXT_MODE = "raw"
+    INSTRUCTIONS = JevAgent.RAW_INSTRUCTIONS
+
+
+class JevHistoryAgent(JevAgent):
+    """Canonical explicit name for the public-history-v2 condition."""
+
+    name = "jev_history"
+    CONTEXT_MODE = "history"
+    INSTRUCTIONS = JevAgent.HISTORY_INSTRUCTIONS
+
+
+class JevProgressAgent(JevHistoryAgent):
+    """History condition plus unweighted, observable progress indicators."""
+
+    name = "jev_progress"
+    CONTEXT_MODE = "progress"
+    INSTRUCTIONS = JevAgent.PROGRESS_INSTRUCTIONS
+
+
+class JevGuardAgent(JevHistoryAgent):
+    """Jev with an explicit public-memory guard against unproductive repeats.
+
+    If an exact visible state has legal actions that have never been tried from
+    that state, previously tried actions are withheld for that decision. This
+    uses only public history and is reported as a separate benchmark agent.
+    """
+
+    name = "jev_guard"
+    CONTEXT_MODE = "guard"
+    MEMORY_POLICY = "untried-actions-first-v1"
+
+    @staticmethod
+    def _memory_candidates(
+        observation: Observation, actions: list[Action]
+    ) -> tuple[list[Action], bool]:
+        untried = [
+            action
+            for action in actions
+            if observation.action_attempt_counts.get(observation.label(action), 0)
+            == 0
+        ]
+        guarded = bool(untried) and len(untried) < len(actions)
+        return (untried if guarded else actions), guarded
+
+    def choose(self, observation: Observation, actions: list[Action]) -> Decision:
+        candidates, guarded = self._memory_candidates(observation, actions)
+        decision = super().choose(observation, candidates)
+        excluded = [
+            observation.label(action) for action in actions if action not in candidates
+        ]
+        policy_forced = len(actions) > 1 and len(candidates) == 1
+        decision.metadata.update(
+            {
+                "forced": len(actions) == 1,
+                "policy_forced": policy_forced,
+                "memory_policy": self.MEMORY_POLICY,
+                "memory_guard_applied": guarded,
+                "full_legal_count": len(actions),
+                "excluded_previously_tried_actions": excluded,
+            }
+        )
+        return decision
+
+
+class JevMemoryAgent(JevGuardAgent):
+    """Backward-compatible name for the jev_guard experimental condition."""
+
+    name = "jev_memory"

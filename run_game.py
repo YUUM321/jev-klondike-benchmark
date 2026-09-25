@@ -10,7 +10,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run one local baseline game")
     parser.add_argument("--agent", choices=("random", "heuristic"), default="heuristic")
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--max-steps", type=int, default=2_000)
+    parser.add_argument("--max-steps", type=int, default=700)
     parser.add_argument("--draw-count", type=int, choices=(1, 3), default=1)
     args = parser.parse_args()
 

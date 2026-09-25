@@ -95,6 +95,10 @@
           </div>
           <p id="action" class="action-text">载入 replay 后显示动作</p>
           <div id="event-chips" class="event-chips"></div>
+          <div id="termination-notice" class="termination-notice" role="status" hidden>
+            <strong id="termination-title"></strong>
+            <span id="termination-copy"></span>
+          </div>
         </section>
 
         <section class="inspector-section">
@@ -116,12 +120,16 @@
             <div><dt>Stock</dt><dd id="stock-metric">0</dd></div>
             <div><dt>Hidden</dt><dd id="hidden-metric">0</dd></div>
             <div><dt>States</dt><dd id="states-metric">—</dd></div>
+            <div><dt>Foundation peak</dt><dd id="foundation-peak-metric">0</dd></div>
+            <div><dt>Since reveal</dt><dd id="reveal-age-metric">0</dd></div>
+            <div><dt>Since foundation +</dt><dd id="foundation-age-metric">0</dd></div>
+            <div><dt>Stock passes stalled</dt><dd id="stock-pass-metric">0</dd></div>
           </dl>
         </section>
 
         <section class="inspector-section legal-section">
           <button id="legal-toggle" class="legal-toggle" type="button" aria-expanded="false">
-            <span>当前合法动作</span><span id="legal-count">0</span>
+            <span id="legal-title">当前合法动作</span><span id="legal-count">0</span>
           </button>
           <ol id="legal-actions" class="legal-actions" hidden></ol>
         </section>

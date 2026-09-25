@@ -9,9 +9,12 @@ const ui = Object.fromEntries(
     "play", "next", "timeline", "step-label", "progress-label", "speed",
     "confidence-ring", "action", "event-chips", "candidate-count",
     "probabilities", "foundation-metric", "stock-metric", "hidden-metric",
-    "states-metric", "legal-toggle", "legal-count", "legal-actions", "drop-overlay",
+    "states-metric", "foundation-peak-metric", "reveal-age-metric",
+    "foundation-age-metric", "stock-pass-metric", "legal-toggle", "legal-title",
+    "legal-count", "legal-actions", "drop-overlay",
     "summary-file", "summary-panel", "summary-description", "summary-cards",
-    "summary-row-count", "summary-table", "back-to-replay", "state-phase"
+    "summary-row-count", "summary-table", "back-to-replay", "state-phase",
+    "termination-notice", "termination-title", "termination-copy"
   ].map((id) => [id, document.getElementById(id)])
 );
 
@@ -26,10 +29,13 @@ const SUMMARY_COLUMNS = [
   ["wins", "Wins"],
   ["win_rate", "Win rate"],
   ["mean_foundation_cards", "Foundation"],
+  ["mean_max_foundation_cards_seen", "Foundation peak"],
   ["mean_hidden_cards_revealed", "Hidden revealed"],
   ["mean_steps", "Steps"],
   ["cycle_stagnation_rate", "Cycle rate"],
   ["mean_revisit_rate", "Revisit rate"],
+  ["draw_rate", "DRAW rate"],
+  ["recycle_rate", "RECYCLE rate"],
   ["mean_decision_latency_ms", "Mean latency"],
   ["mean_game_p95_decision_latency_ms", "P95 latency"],
   ["agent_errors", "Errors"],
@@ -174,10 +180,27 @@ function renderProbabilities(frame) {
   }
 }
 
-function renderLegalActions(frame) {
-  const actions = frame.legal_actions || [];
+function phaseLegalActions(frame, phase) {
+  if (phase === "after") return frame.legal_actions_after || [];
+  return frame.legal_actions_before || frame.legal_actions || [];
+}
+
+function phasePublicHistory(frame, phase) {
+  if (phase === "after") return frame.public_history_after || {};
+  return frame.public_history_before || frame.public_history || {};
+}
+
+function phaseProgress(frame, phase) {
+  if (phase === "after") return frame.progress_after || {};
+  return frame.progress_before || frame.progress || {};
+}
+
+function renderLegalActions(frame, phase) {
+  const actions = phaseLegalActions(frame, phase);
   ui["legal-count"].textContent = String(actions.length);
-  ui["candidate-count"].textContent = `${actions.length} candidates`;
+  ui["legal-title"].textContent = frame.action
+    ? (phase === "after" ? "执行后合法动作" : "本次决策候选动作")
+    : "初始合法动作";
   ui["legal-actions"].replaceChildren();
   for (const action of actions) {
     const item = document.createElement("li");
@@ -197,15 +220,26 @@ function renderEvents(frame, phase) {
   }
   if (frame.decision_latency_ms != null) {
     labels.push(frame.forced
-      ? `强制动作 · ${frame.decision_latency_ms.toFixed(2)} ms`
-      : `决策 ${frame.decision_latency_ms.toFixed(1)} ms`);
+      ? `规则唯一动作 · ${frame.decision_latency_ms.toFixed(2)} ms`
+      : frame.policy_forced
+        ? `记忆层唯一未尝试动作 · ${frame.decision_latency_ms.toFixed(2)} ms`
+        : `Jev 决策 ${frame.decision_latency_ms.toFixed(1)} ms`);
   }
-  const history = frame.public_history || {};
+  const history = phasePublicHistory(frame, phase);
   if ((history.visible_state_visit_count || 1) > 1) {
     labels.push(`第 ${history.visible_state_visit_count} 次到达此局面`);
   }
-  if ((history.actions_tried_from_visible_state || []).length) {
-    labels.push(`此前已试 ${history.actions_tried_from_visible_state.length} 个动作`);
+  const attemptCounts = history.action_attempt_counts || {};
+  const totalAttempts = Object.values(attemptCounts).reduce((sum, count) => sum + Number(count), 0);
+  const distinctAttempts = Object.keys(attemptCounts).length
+    || (history.actions_tried_from_visible_state || []).length;
+  if (totalAttempts) {
+    labels.push(`此局面已尝试 ${totalAttempts} 次 · ${distinctAttempts} 种动作`);
+  } else if (distinctAttempts) {
+    labels.push(`此前已试 ${distinctAttempts} 种动作`);
+  }
+  if ((history.steps_since_new_visible_state || 0) > 0) {
+    labels.push(`连续 ${history.steps_since_new_visible_state} 步未见新可见局面`);
   }
   if (!labels.length && frame.step > 0) {
     labels.push(phase === "before" ? "等待执行" : "无结构事件");
@@ -218,6 +252,38 @@ function renderEvents(frame, phase) {
   }
 }
 
+function renderTermination(frame, run, isLast, phase) {
+  const show = isLast && phase === "after";
+  ui["termination-notice"].hidden = !show;
+  if (!show) return;
+
+  const reason = run.termination_reason;
+  const stagnationSteps = run.stagnation_steps ?? 50;
+  const actions = phaseLegalActions(frame, phase);
+  const tried = new Set(phasePublicHistory(frame, phase).actions_tried_from_visible_state || []);
+  const untried = actions.filter((action) => !tried.has(action));
+  const remaining = actions.length
+    ? `停止时仍有 ${actions.length} 个合法动作，其中 ${untried.length} 个在该可见局面尚未尝试。`
+    : "停止时没有合法动作。";
+  const copy = {
+    win: "52 张牌已全部进入 Foundation。",
+    hard_dead_end: "规则层面已无合法动作。",
+    cycle_stagnation: `连续 ${stagnationSteps} 次状态转移都未访问新状态，运行器在进入此局面后截停，没有再向 Jev 请求下一次决策。${remaining}这不表示牌局本身无解。`,
+    turn_cap: `达到运行步数上限，运行器在进入此局面后截停。${remaining}`,
+    agent_error: "Agent 或 API 出错，运行在此处中断。",
+  };
+  const title = {
+    win: "游戏完成",
+    hard_dead_end: "硬死局",
+    cycle_stagnation: "循环停滞：并非无动作",
+    turn_cap: "达到步数上限",
+    agent_error: "运行异常中断",
+  };
+  ui["termination-title"].textContent = title[reason] || "运行结束";
+  ui["termination-copy"].textContent = copy[reason] || reason;
+  ui["termination-notice"].dataset.reason = reason;
+}
+
 function render() {
   if (!replay) return;
   const frame = replay.frames[frameIndex];
@@ -226,8 +292,12 @@ function render() {
   const state = framePhase === "after" ? frame.state_after : frame.state_before;
   renderBoard(state);
   renderProbabilities(frame);
-  renderLegalActions(frame);
+  const candidateCount = frame.decision_metadata?.candidate_count
+    ?? phaseLegalActions(frame, "before").length;
+  ui["candidate-count"].textContent = `${candidateCount} candidates`;
+  renderLegalActions(frame, framePhase);
   renderEvents(frame, framePhase);
+  renderTermination(frame, run, frameIndex === last, framePhase);
 
   ui["run-title"].textContent = `${replay.game.name} ${replay.game.variant}`;
   ui["agent-badge"].textContent = run.agent.toUpperCase();
@@ -246,12 +316,17 @@ function render() {
 
   const foundation = countFoundation(state);
   const hidden = state.tableau.flat().filter((card) => card === "XX").length;
+  const progress = phaseProgress(frame, framePhase);
   ui["foundation-metric"].textContent = `${foundation} / 52`;
   ui["stock-metric"].textContent = String(state.stock_count);
   ui["hidden-metric"].textContent = String(hidden);
   ui["states-metric"].textContent = frameIndex === last
     ? String(run.unique_states_visited ?? "—")
     : "live";
+  ui["foundation-peak-metric"].textContent = String(progress.max_foundation_cards_seen ?? foundation);
+  ui["reveal-age-metric"].textContent = String(progress.steps_since_hidden_reveal ?? "—");
+  ui["foundation-age-metric"].textContent = String(progress.steps_since_foundation_increase ?? "—");
+  ui["stock-pass-metric"].textContent = String(progress.stock_passes_since_structural_progress ?? "—");
 
   ui.timeline.max = String(last);
   ui.timeline.value = String(frameIndex);
@@ -271,7 +346,15 @@ function migrateReplayV1(data) {
       state_before: index === 0 ? frame.state : previous.state,
       state_after: frame.state,
       legal_actions: index === 0 ? frame.legal_actions : previous.legal_actions,
+      legal_actions_before: index === 0 ? frame.legal_actions : previous.legal_actions,
+      legal_actions_after: frame.legal_actions || [],
       public_history: frame.public_history || {},
+      public_history_before: frame.public_history || {},
+      public_history_after: frame.public_history || {},
+      progress: frame.progress || {},
+      progress_before: frame.progress || {},
+      progress_after: frame.progress || {},
+      policy_forced: false,
     };
   });
   return { ...data, schema_version: 2, frames };
@@ -366,6 +449,9 @@ function aggregateRuns(rows) {
     const wins = completed.filter((game) => String(game.win).toLowerCase() === "true").length;
     const timed = completed.reduce((sum, game) => sum + Number(game.timed_decisions || 0), 0);
     const latency = completed.reduce((sum, game) => sum + Number(game.decision_latency_ms_total || 0), 0);
+    const choices = completed.reduce((sum, game) => sum + Number(game.choice_decisions || 0), 0);
+    const draws = completed.reduce((sum, game) => sum + Number(game.draw_choices || 0), 0);
+    const recycles = completed.reduce((sum, game) => sum + Number(game.recycle_choices || 0), 0);
     return {
       agent,
       games: games.length,
@@ -373,12 +459,15 @@ function aggregateRuns(rows) {
       wins,
       win_rate: completed.length ? wins / completed.length : 0,
       mean_foundation_cards: mean(completed, "foundation_cards"),
+      mean_max_foundation_cards_seen: mean(completed, "max_foundation_cards_seen"),
       mean_hidden_cards_revealed: mean(completed, "hidden_cards_revealed"),
       mean_steps: mean(completed, "steps"),
       cycle_stagnation_rate: completed.length
         ? completed.filter((game) => game.termination_reason === "cycle_stagnation").length / completed.length
         : 0,
       mean_revisit_rate: mean(completed, "revisit_rate"),
+      draw_rate: choices ? draws / choices : 0,
+      recycle_rate: choices ? recycles / choices : 0,
       mean_decision_latency_ms: timed ? latency / timed : "",
       mean_game_p95_decision_latency_ms: mean(completed, "decision_latency_ms_p95"),
       agent_errors: games.length - completed.length,
@@ -456,6 +545,8 @@ function renderSummary(rows, source = "summary.csv", kind = "summary.csv") {
       makeSummaryMetric("Foundation", displaySummaryValue("mean_foundation_cards", row.mean_foundation_cards)),
       makeSummaryMetric("Steps", displaySummaryValue("mean_steps", row.mean_steps)),
       makeSummaryMetric("Cycle rate", displaySummaryValue("cycle_stagnation_rate", row.cycle_stagnation_rate)),
+      makeSummaryMetric("DRAW rate", displaySummaryValue("draw_rate", row.draw_rate)),
+      makeSummaryMetric("RECYCLE rate", displaySummaryValue("recycle_rate", row.recycle_rate)),
       makeSummaryMetric("Mean latency", displaySummaryValue("mean_decision_latency_ms", row.mean_decision_latency_ms)),
       makeSummaryMetric("Errors", displaySummaryValue("agent_errors", row.agent_errors)),
     );

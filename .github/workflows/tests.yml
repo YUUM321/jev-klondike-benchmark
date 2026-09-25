@@ -19,4 +19,7 @@ jobs:
       - run: python -m benchmark.generate_seed_set --check
       - run: node --check web/app.js
       - run: node --check web/summary.js
+      - run: node tests/test_web_summary.js
+      - run: python -m json.tool web/replay.schema.json > /dev/null
+      - run: python -m json.tool web/replay.example.json > /dev/null
       - run: git diff --check

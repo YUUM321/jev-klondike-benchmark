@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "created_at_utc": "2026-09-24T13:18:33.100634+00:00",
+  "created_at_utc": "2026-09-25T07:56:16.261399+00:00",
   "game": {
     "name": "Klondike Solitaire",
     "variant": "Draw-3",
@@ -21,13 +21,22 @@
     "termination_reason": "turn_cap",
     "forced_decisions": 0,
     "timed_decisions": 20,
-    "decision_latency_ms_total": 0.3095,
-    "decision_latency_ms_mean": 0.015475,
-    "decision_latency_ms_median": 0.0065,
-    "decision_latency_ms_p95": 0.0154,
-    "elapsed_seconds": 0.004006,
+    "decision_latency_ms_total": 0.1785,
+    "decision_latency_ms_mean": 0.008925,
+    "decision_latency_ms_median": 0.00735,
+    "decision_latency_ms_p95": 0.0129,
+    "elapsed_seconds": 0.005134,
     "draw_count": 3,
-    "error": null
+    "error": null,
+    "stagnation_steps": 50,
+    "max_steps": 20,
+    "policy_forced_decisions": 0,
+    "choice_decisions": 20,
+    "draw_choices": 3,
+    "recycle_choices": 0,
+    "draw_rate": 0.15,
+    "recycle_rate": 0.0,
+    "max_foundation_cards_seen": 1
   },
   "frames": [
     {
@@ -145,9 +154,22 @@
         "stock_count": 24
       },
       "action": null,
+      "action_kind": null,
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)",
+        "AS: tableau 6 -> foundation S"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)",
+        "AS: tableau 6 -> foundation S"
+      ],
+      "legal_actions_after": [
         "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
         "JC: tableau 5 -> tableau 3 (1 card)",
@@ -161,9 +183,68 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
-        "recent_actions": []
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [],
+        "recent_transitions": []
+      },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [],
+        "recent_transitions": []
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [],
+        "recent_transitions": []
+      },
+      "progress": {
+        "foundation_cards": 0,
+        "max_foundation_cards_seen": 0,
+        "tableau_hidden_remaining": 21,
+        "hidden_cards_revealed_total": 0,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 0,
+        "max_foundation_cards_seen": 0,
+        "tableau_hidden_remaining": 21,
+        "hidden_cards_revealed_total": 0,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 0,
+        "max_foundation_cards_seen": 0,
+        "tableau_hidden_remaining": 21,
+        "hidden_cards_revealed_total": 0,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
       },
       "forced": false,
+      "policy_forced": false,
       "decision_latency_ms": null
     },
     {
@@ -280,6 +361,7 @@
         "stock_count": 24
       },
       "action": "AS: tableau 6 -> foundation S",
+      "action_kind": "tableau_to_foundation",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
@@ -287,6 +369,17 @@
         "2C: tableau 4 -> tableau 0 (1 card)",
         "JC: tableau 5 -> tableau 3 (1 card)",
         "AS: tableau 6 -> foundation S"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)",
+        "AS: tableau 6 -> foundation S"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -299,10 +392,78 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
-        "recent_actions": []
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [],
+        "recent_transitions": []
+      },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [],
+        "recent_transitions": []
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 0,
+        "max_foundation_cards_seen": 0,
+        "tableau_hidden_remaining": 21,
+        "hidden_cards_revealed_total": 0,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 0,
+        "max_foundation_cards_seen": 0,
+        "tableau_hidden_remaining": 21,
+        "hidden_cards_revealed_total": 0,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 20,
+        "hidden_cards_revealed_total": 1,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
       },
       "forced": false,
-      "decision_latency_ms": 0.1796
+      "policy_forced": false,
+      "decision_latency_ms": 0.0331
     },
     {
       "step": 2,
@@ -417,12 +578,23 @@
         "stock_count": 24
       },
       "action": "JC: tableau 5 -> tableau 3 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
         "JC: tableau 5 -> tableau 3 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "JC: tableau 5 -> tableau 3 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "6D: tableau 5 -> tableau 2 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -435,12 +607,103 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 20,
+        "hidden_cards_revealed_total": 1,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 20,
+        "hidden_cards_revealed_total": 1,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 0,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 19,
+        "hidden_cards_revealed_total": 2,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 1,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0154
+      "policy_forced": false,
+      "decision_latency_ms": 0.012
     },
     {
       "step": 3,
@@ -555,12 +818,23 @@
         "stock_count": 24
       },
       "action": "6D: tableau 5 -> tableau 2 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "2C: tableau 4 -> tableau 0 (1 card)",
         "6D: tableau 5 -> tableau 2 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "2C: tableau 4 -> tableau 0 (1 card)",
+        "6D: tableau 5 -> tableau 2 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+        "2C: tableau 4 -> tableau 0 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -573,13 +847,124 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 19,
+        "hidden_cards_revealed_total": 2,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 1,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 19,
+        "hidden_cards_revealed_total": 2,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 1,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 18,
+        "hidden_cards_revealed_total": 3,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 2,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0086
+      "policy_forced": false,
+      "decision_latency_ms": 0.0095
     },
     {
       "step": 4,
@@ -694,12 +1079,22 @@
         "stock_count": 24
       },
       "action": "2C: tableau 4 -> tableau 0 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "7S 6D: tableau 2 -> tableau 5 (2 cards)",
         "2C: tableau 4 -> tableau 0 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+        "2C: tableau 4 -> tableau 0 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -712,14 +1107,145 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
           "6D: tableau 5 -> tableau 2 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 18,
+        "hidden_cards_revealed_total": 3,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 2,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 18,
+        "hidden_cards_revealed_total": 3,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 2,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 17,
+        "hidden_cards_revealed_total": 4,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 3,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0084
+      "policy_forced": false,
+      "decision_latency_ms": 0.0089
     },
     {
       "step": 5,
@@ -834,11 +1360,21 @@
         "stock_count": 24
       },
       "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 2 -> tableau 4 (1 card)",
+        "5S: tableau 2 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -851,15 +1387,166 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
           "6D: tableau 5 -> tableau 2 (1 card)",
           "2C: tableau 4 -> tableau 0 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 17,
+        "hidden_cards_revealed_total": 4,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 3,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 17,
+        "hidden_cards_revealed_total": 4,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 3,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 16,
+        "hidden_cards_revealed_total": 5,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 4,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0063
+      "policy_forced": false,
+      "decision_latency_ms": 0.0066
     },
     {
       "step": 6,
@@ -974,12 +1661,23 @@
         "stock_count": 24
       },
       "action": "5S: tableau 2 -> tableau 5 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 2 -> tableau 4 (1 card)",
         "5S: tableau 2 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 2 -> tableau 4 (1 card)",
+        "5S: tableau 2 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -992,16 +1690,187 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
           "6D: tableau 5 -> tableau 2 (1 card)",
           "2C: tableau 4 -> tableau 0 (1 card)",
           "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 16,
+        "hidden_cards_revealed_total": 5,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 4,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 16,
+        "hidden_cards_revealed_total": 5,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 4,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 5,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0072
+      "policy_forced": false,
+      "decision_latency_ms": 0.0075
     },
     {
       "step": 7,
@@ -1116,12 +1985,23 @@
         "stock_count": 24
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "9H: tableau 2 -> tableau 1 (1 card)",
         "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -1134,6 +2014,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
@@ -1141,9 +2024,197 @@
           "2C: tableau 4 -> tableau 0 (1 card)",
           "7S 6D: tableau 2 -> tableau 5 (2 cards)",
           "5S: tableau 2 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 5,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 5,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 1,
+        "steps_since_foundation_increase": 6,
+        "steps_since_structural_progress": 1,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
+      "policy_forced": false,
       "decision_latency_ms": 0.0071
     },
     {
@@ -1259,12 +2330,23 @@
         "stock_count": 24
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "9H: tableau 2 -> tableau 1 (1 card)",
         "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -1277,6 +2359,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
@@ -1285,10 +2370,226 @@
           "7S 6D: tableau 2 -> tableau 5 (2 cards)",
           "5S: tableau 2 -> tableau 5 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_72dd1f494248": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 1,
+        "steps_since_foundation_increase": 6,
+        "steps_since_structural_progress": 1,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 1,
+        "steps_since_foundation_increase": 6,
+        "steps_since_structural_progress": 1,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 2,
+        "steps_since_foundation_increase": 7,
+        "steps_since_structural_progress": 2,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0069
+      "policy_forced": false,
+      "decision_latency_ms": 0.0072
     },
     {
       "step": 9,
@@ -1402,11 +2703,21 @@
         "stock_count": 24
       },
       "action": "9H: tableau 2 -> tableau 1 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "9H: tableau 2 -> tableau 1 (1 card)",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
@@ -1422,6 +2733,15 @@
         "actions_tried_from_visible_state": [
           "5S: tableau 5 -> tableau 4 (1 card)"
         ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_72dd1f494248": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
         "recent_actions": [
           "AS: tableau 6 -> foundation S",
           "JC: tableau 5 -> tableau 3 (1 card)",
@@ -1431,9 +2751,238 @@
           "5S: tableau 2 -> tableau 5 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_72dd1f494248": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "AS: tableau 6 -> foundation S",
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "AS: tableau 6 -> foundation S",
+            "outcome_visible_state": "v_670b476d94ac",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 2,
+        "steps_since_foundation_increase": 7,
+        "steps_since_structural_progress": 2,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 2,
+        "steps_since_foundation_increase": 7,
+        "steps_since_structural_progress": 2,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 3,
+        "steps_since_foundation_increase": 8,
+        "steps_since_structural_progress": 3,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
+      "policy_forced": false,
       "decision_latency_ms": 0.0078
     },
     {
@@ -1547,11 +3096,20 @@
         "stock_count": 24
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -1564,6 +3122,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "JC: tableau 5 -> tableau 3 (1 card)",
           "6D: tableau 5 -> tableau 2 (1 card)",
@@ -1573,10 +3134,231 @@
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
           "9H: tableau 2 -> tableau 1 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "JC: tableau 5 -> tableau 3 (1 card)",
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "JC: tableau 5 -> tableau 3 (1 card)",
+            "outcome_visible_state": "v_62aeba637dca",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 3,
+        "steps_since_foundation_increase": 8,
+        "steps_since_structural_progress": 3,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 3,
+        "steps_since_foundation_increase": 8,
+        "steps_since_structural_progress": 3,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 4,
+        "steps_since_foundation_increase": 9,
+        "steps_since_structural_progress": 4,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0056
+      "policy_forced": false,
+      "decision_latency_ms": 0.0059
     },
     {
       "step": 11,
@@ -1689,11 +3471,20 @@
         "stock_count": 24
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -1706,6 +3497,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "6D: tableau 5 -> tableau 2 (1 card)",
           "2C: tableau 4 -> tableau 0 (1 card)",
@@ -1715,10 +3509,239 @@
           "5S: tableau 4 -> tableau 5 (1 card)",
           "9H: tableau 2 -> tableau 1 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "6D: tableau 5 -> tableau 2 (1 card)",
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "6D: tableau 5 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_31ae392952f9",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_f921499f0dc4": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 4,
+        "steps_since_foundation_increase": 9,
+        "steps_since_structural_progress": 4,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 4,
+        "steps_since_foundation_increase": 9,
+        "steps_since_structural_progress": 4,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 5,
+        "steps_since_foundation_increase": 10,
+        "steps_since_structural_progress": 5,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0052
+      "policy_forced": false,
+      "decision_latency_ms": 0.0058
     },
     {
       "step": 12,
@@ -1835,9 +3858,18 @@
         "stock_count": 21
       },
       "action": "draw up to 3 cards from stock",
+      "action_kind": "draw",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
         "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
@@ -1854,6 +3886,15 @@
         "actions_tried_from_visible_state": [
           "5S: tableau 5 -> tableau 4 (1 card)"
         ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_f921499f0dc4": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
         "recent_actions": [
           "2C: tableau 4 -> tableau 0 (1 card)",
           "7S 6D: tableau 2 -> tableau 5 (2 cards)",
@@ -1863,10 +3904,239 @@
           "9H: tableau 2 -> tableau 1 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_f921499f0dc4": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "2C: tableau 4 -> tableau 0 (1 card)",
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "2C: tableau 4 -> tableau 0 (1 card)",
+            "outcome_visible_state": "v_f9142ed8baed",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 5,
+        "steps_since_foundation_increase": 10,
+        "steps_since_structural_progress": 5,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 5,
+        "steps_since_foundation_increase": 10,
+        "steps_since_structural_progress": 5,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 6,
+        "steps_since_foundation_increase": 11,
+        "steps_since_structural_progress": 6,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0059
+      "policy_forced": false,
+      "decision_latency_ms": 0.0063
     },
     {
       "step": 13,
@@ -1987,11 +4257,20 @@
         "stock_count": 21
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -2004,6 +4283,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "7S 6D: tableau 2 -> tableau 5 (2 cards)",
           "5S: tableau 2 -> tableau 5 (1 card)",
@@ -2013,10 +4295,231 @@
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "7S 6D: tableau 2 -> tableau 5 (2 cards)",
+            "outcome_visible_state": "v_f8f85db3ae28",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 6,
+        "steps_since_foundation_increase": 11,
+        "steps_since_structural_progress": 6,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 6,
+        "steps_since_foundation_increase": 11,
+        "steps_since_structural_progress": 6,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 7,
+        "steps_since_foundation_increase": 12,
+        "steps_since_structural_progress": 7,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0057
+      "policy_forced": false,
+      "decision_latency_ms": 0.006
     },
     {
       "step": 14,
@@ -2137,11 +4640,20 @@
         "stock_count": 21
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -2154,6 +4666,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "5S: tableau 2 -> tableau 5 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)",
@@ -2163,10 +4678,239 @@
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock",
           "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 2 -> tableau 5 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 2 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_9596874eb1d0": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 7,
+        "steps_since_foundation_increase": 12,
+        "steps_since_structural_progress": 7,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 7,
+        "steps_since_foundation_increase": 12,
+        "steps_since_structural_progress": 7,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 8,
+        "steps_since_foundation_increase": 13,
+        "steps_since_structural_progress": 8,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0049
+      "policy_forced": false,
+      "decision_latency_ms": 0.0054
     },
     {
       "step": 15,
@@ -2287,9 +5031,18 @@
         "stock_count": 18
       },
       "action": "draw up to 3 cards from stock",
+      "action_kind": "draw",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
         "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
@@ -2306,6 +5059,15 @@
         "actions_tried_from_visible_state": [
           "5S: tableau 5 -> tableau 4 (1 card)"
         ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_9596874eb1d0": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
         "recent_actions": [
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
@@ -2315,10 +5077,239 @@
           "draw up to 3 cards from stock",
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_9596874eb1d0": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_72dd1f494248",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 8,
+        "steps_since_foundation_increase": 13,
+        "steps_since_structural_progress": 8,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 8,
+        "steps_since_foundation_increase": 13,
+        "steps_since_structural_progress": 8,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 9,
+        "steps_since_foundation_increase": 14,
+        "steps_since_structural_progress": 9,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0052
+      "policy_forced": false,
+      "decision_latency_ms": 0.0057
     },
     {
       "step": 16,
@@ -2439,11 +5430,20 @@
         "stock_count": 18
       },
       "action": "5S: tableau 5 -> tableau 4 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -2456,6 +5456,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "5S: tableau 4 -> tableau 5 (1 card)",
           "9H: tableau 2 -> tableau 1 (1 card)",
@@ -2465,10 +5468,231 @@
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_a8643070b3ce",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 9,
+        "steps_since_foundation_increase": 14,
+        "steps_since_structural_progress": 9,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 9,
+        "steps_since_foundation_increase": 14,
+        "steps_since_structural_progress": 9,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 10,
+        "steps_since_foundation_increase": 15,
+        "steps_since_structural_progress": 10,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.005
+      "policy_forced": false,
+      "decision_latency_ms": 0.0056
     },
     {
       "step": 17,
@@ -2589,11 +5813,20 @@
         "stock_count": 18
       },
       "action": "5S: tableau 4 -> tableau 5 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 4 -> tableau 5 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -2606,6 +5839,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "9H: tableau 2 -> tableau 1 (1 card)",
           "5S: tableau 5 -> tableau 4 (1 card)",
@@ -2615,10 +5851,239 @@
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock",
           "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "9H: tableau 2 -> tableau 1 (1 card)",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "9H: tableau 2 -> tableau 1 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_8ef44fd030dd": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 10,
+        "steps_since_foundation_increase": 15,
+        "steps_since_structural_progress": 10,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 10,
+        "steps_since_foundation_increase": 15,
+        "steps_since_structural_progress": 10,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 11,
+        "steps_since_foundation_increase": 16,
+        "steps_since_structural_progress": 11,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0051
+      "policy_forced": false,
+      "decision_latency_ms": 0.0129
     },
     {
       "step": 18,
@@ -2739,10 +6204,20 @@
         "stock_count": 15
       },
       "action": "draw up to 3 cards from stock",
+      "action_kind": "draw",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "KD: waste -> tableau 2",
         "5S: tableau 5 -> tableau 4 (1 card)"
       ],
       "events": {
@@ -2758,6 +6233,15 @@
         "actions_tried_from_visible_state": [
           "5S: tableau 5 -> tableau 4 (1 card)"
         ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_8ef44fd030dd": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
         "recent_actions": [
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
@@ -2767,10 +6251,239 @@
           "draw up to 3 cards from stock",
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 2,
+        "actions_tried_from_visible_state": [
+          "5S: tableau 5 -> tableau 4 (1 card)"
+        ],
+        "action_attempt_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": 1
+        },
+        "action_outcome_counts": {
+          "5S: tableau 5 -> tableau 4 (1 card)": {
+            "v_8ef44fd030dd": 1
+          }
+        },
+        "steps_since_new_visible_state": 1,
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_f921499f0dc4",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 11,
+        "steps_since_foundation_increase": 16,
+        "steps_since_structural_progress": 11,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 2,
+        "steps_since_new_visible_state": 1,
+        "steps_since_hidden_reveal": 11,
+        "steps_since_foundation_increase": 16,
+        "steps_since_structural_progress": 11,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 12,
+        "steps_since_foundation_increase": 17,
+        "steps_since_structural_progress": 12,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.005
+      "policy_forced": false,
+      "decision_latency_ms": 0.0076
     },
     {
       "step": 19,
@@ -2892,12 +6605,24 @@
         "stock_count": 15
       },
       "action": "KD: waste -> tableau 2",
+      "action_kind": "waste_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
         "draw up to 3 cards from stock",
         "KD: waste -> tableau 2",
         "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "KD: waste -> tableau 2",
+        "5S: tableau 5 -> tableau 4 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "4H: waste -> tableau 5",
+        "5S: tableau 5 -> tableau 4 (1 card)",
+        "QS: tableau 6 -> tableau 2 (1 card)"
       ],
       "events": {
         "hidden_revealed": 0,
@@ -2910,6 +6635,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock",
@@ -2919,10 +6647,231 @@
           "5S: tableau 5 -> tableau 4 (1 card)",
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_29f317a2f2ec",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "KD: waste -> tableau 2"
+        ],
+        "recent_transitions": [
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "KD: waste -> tableau 2",
+            "outcome_visible_state": "v_f20d94a8feef",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 12,
+        "steps_since_foundation_increase": 17,
+        "steps_since_structural_progress": 12,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 12,
+        "steps_since_foundation_increase": 17,
+        "steps_since_structural_progress": 12,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 13,
+        "steps_since_foundation_increase": 18,
+        "steps_since_structural_progress": 13,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0067
+      "policy_forced": false,
+      "decision_latency_ms": 0.0085
     },
     {
       "step": 20,
@@ -3045,6 +6994,7 @@
         "stock_count": 15
       },
       "action": "QS: tableau 6 -> tableau 2 (1 card)",
+      "action_kind": "tableau_to_tableau",
       "confidence": null,
       "probabilities": {},
       "legal_actions": [
@@ -3052,6 +7002,18 @@
         "4H: waste -> tableau 5",
         "5S: tableau 5 -> tableau 4 (1 card)",
         "QS: tableau 6 -> tableau 2 (1 card)"
+      ],
+      "legal_actions_before": [
+        "draw up to 3 cards from stock",
+        "4H: waste -> tableau 5",
+        "5S: tableau 5 -> tableau 4 (1 card)",
+        "QS: tableau 6 -> tableau 2 (1 card)"
+      ],
+      "legal_actions_after": [
+        "draw up to 3 cards from stock",
+        "4H: waste -> tableau 5",
+        "5S: tableau 5 -> tableau 4 (1 card)",
+        "AS: foundation S -> tableau 6"
       ],
       "events": {
         "hidden_revealed": 1,
@@ -3064,6 +7026,9 @@
       "public_history": {
         "visible_state_visit_count": 1,
         "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
         "recent_actions": [
           "draw up to 3 cards from stock",
           "5S: tableau 5 -> tableau 4 (1 card)",
@@ -3073,10 +7038,231 @@
           "5S: tableau 4 -> tableau 5 (1 card)",
           "draw up to 3 cards from stock",
           "KD: waste -> tableau 2"
+        ],
+        "recent_transitions": [
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "KD: waste -> tableau 2",
+            "outcome_visible_state": "v_f20d94a8feef",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
         ]
       },
+      "public_history_before": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "KD: waste -> tableau 2"
+        ],
+        "recent_transitions": [
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "KD: waste -> tableau 2",
+            "outcome_visible_state": "v_f20d94a8feef",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "public_history_after": {
+        "visible_state_visit_count": 1,
+        "actions_tried_from_visible_state": [],
+        "action_attempt_counts": {},
+        "action_outcome_counts": {},
+        "steps_since_new_visible_state": 0,
+        "recent_actions": [
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "5S: tableau 5 -> tableau 4 (1 card)",
+          "5S: tableau 4 -> tableau 5 (1 card)",
+          "draw up to 3 cards from stock",
+          "KD: waste -> tableau 2",
+          "QS: tableau 6 -> tableau 2 (1 card)"
+        ],
+        "recent_transitions": [
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_9596874eb1d0",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_65fb1bb6cd4c",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 5 -> tableau 4 (1 card)",
+            "outcome_visible_state": "v_8ef44fd030dd",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "5S: tableau 4 -> tableau 5 (1 card)",
+            "outcome_visible_state": "v_0f3cd9b47f7d",
+            "outcome_was_new": false,
+            "outcome_visit_count": 2
+          },
+          {
+            "action": "draw up to 3 cards from stock",
+            "outcome_visible_state": "v_aff5891da37f",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "KD: waste -> tableau 2",
+            "outcome_visible_state": "v_f20d94a8feef",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          },
+          {
+            "action": "QS: tableau 6 -> tableau 2 (1 card)",
+            "outcome_visible_state": "v_ece97880c85b",
+            "outcome_was_new": true,
+            "outcome_visit_count": 1
+          }
+        ]
+      },
+      "progress": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 13,
+        "steps_since_foundation_increase": 18,
+        "steps_since_structural_progress": 13,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_before": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 15,
+        "hidden_cards_revealed_total": 6,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 13,
+        "steps_since_foundation_increase": 18,
+        "steps_since_structural_progress": 13,
+        "stock_passes_since_structural_progress": 0
+      },
+      "progress_after": {
+        "foundation_cards": 1,
+        "max_foundation_cards_seen": 1,
+        "tableau_hidden_remaining": 14,
+        "hidden_cards_revealed_total": 7,
+        "visible_state_visit_count": 1,
+        "steps_since_new_visible_state": 0,
+        "steps_since_hidden_reveal": 0,
+        "steps_since_foundation_increase": 19,
+        "steps_since_structural_progress": 0,
+        "stock_passes_since_structural_progress": 0
+      },
       "forced": false,
-      "decision_latency_ms": 0.0079
+      "policy_forced": false,
+      "decision_latency_ms": 0.0091
     }
   ]
 }

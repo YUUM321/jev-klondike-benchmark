@@ -29,6 +29,8 @@
         "termination_reason": {
           "enum": ["win", "hard_dead_end", "cycle_stagnation", "turn_cap", "agent_error"]
         },
+        "stagnation_steps": { "type": "integer", "minimum": 1 },
+        "max_steps": { "type": "integer", "minimum": 1 },
         "unique_states_visited": { "type": "integer", "minimum": 1 },
         "revisit_rate": { "type": "number", "minimum": 0, "maximum": 1 }
       }
@@ -74,6 +76,42 @@
         "stock_count": { "type": "integer", "minimum": 0, "maximum": 24 }
       }
     },
+    "publicHistory": {
+      "type": "object",
+      "properties": {
+        "visible_state_visit_count": { "type": "integer", "minimum": 1 },
+        "actions_tried_from_visible_state": { "type": "array", "items": { "type": "string" } },
+        "action_attempt_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 1 }
+        },
+        "action_outcome_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "steps_since_new_visible_state": { "type": "integer", "minimum": 0 },
+        "recent_actions": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+        "recent_transitions": { "type": "array", "maxItems": 8, "items": { "type": "object" } }
+      }
+    },
+    "progress": {
+      "type": "object",
+      "properties": {
+        "foundation_cards": { "type": "integer", "minimum": 0, "maximum": 52 },
+        "max_foundation_cards_seen": { "type": "integer", "minimum": 0, "maximum": 52 },
+        "tableau_hidden_remaining": { "type": "integer", "minimum": 0, "maximum": 21 },
+        "hidden_cards_revealed_total": { "type": "integer", "minimum": 0, "maximum": 21 },
+        "visible_state_visit_count": { "type": "integer", "minimum": 1 },
+        "steps_since_new_visible_state": { "type": "integer", "minimum": 0 },
+        "steps_since_hidden_reveal": { "type": "integer", "minimum": 0 },
+        "steps_since_foundation_increase": { "type": "integer", "minimum": 0 },
+        "steps_since_structural_progress": { "type": "integer", "minimum": 0 },
+        "stock_passes_since_structural_progress": { "type": "integer", "minimum": 0 }
+      }
+    },
     "frame": {
       "type": "object",
       "required": ["step", "state_before", "state_after", "action", "confidence", "probabilities", "legal_actions", "events"],
@@ -82,22 +120,38 @@
         "state_before": { "$ref": "#/$defs/visibleState" },
         "state_after": { "$ref": "#/$defs/visibleState" },
         "action": { "type": ["string", "null"] },
+        "action_kind": { "type": ["string", "null"] },
         "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
         "forced": { "type": "boolean" },
+        "policy_forced": { "type": "boolean" },
         "decision_latency_ms": { "type": ["number", "null"], "minimum": 0 },
         "probabilities": {
           "type": "object",
           "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
         },
         "legal_actions": { "type": "array", "items": { "type": "string" } },
+        "legal_actions_before": { "type": "array", "items": { "type": "string" } },
+        "legal_actions_after": { "type": "array", "items": { "type": "string" } },
         "public_history": {
           "type": "object",
           "properties": {
             "visible_state_visit_count": { "type": "integer", "minimum": 1 },
             "actions_tried_from_visible_state": { "type": "array", "items": { "type": "string" } },
-            "recent_actions": { "type": "array", "maxItems": 8, "items": { "type": "string" } }
+            "action_attempt_counts": {
+              "type": "object",
+              "additionalProperties": { "type": "integer", "minimum": 1 }
+            },
+            "action_outcome_counts": { "type": "object" },
+            "steps_since_new_visible_state": { "type": "integer", "minimum": 0 },
+            "recent_actions": { "type": "array", "maxItems": 8, "items": { "type": "string" } },
+            "recent_transitions": { "type": "array", "maxItems": 8, "items": { "type": "object" } }
           }
         },
+        "public_history_before": { "$ref": "#/$defs/publicHistory" },
+        "public_history_after": { "$ref": "#/$defs/publicHistory" },
+        "progress": { "$ref": "#/$defs/progress" },
+        "progress_before": { "$ref": "#/$defs/progress" },
+        "progress_after": { "$ref": "#/$defs/progress" },
         "events": {
           "type": "object",
           "required": ["hidden_revealed", "foundation_delta"],

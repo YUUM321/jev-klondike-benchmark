@@ -12,8 +12,10 @@ const ui = typeof document === "undefined" ? null : {
 const COLUMNS = [
   ["agent", "Agent"], ["games", "Games"], ["wins", "Wins"],
   ["win_rate", "Win rate"], ["mean_foundation_cards", "Foundation"],
+  ["mean_max_foundation_cards_seen", "Foundation peak"],
   ["mean_hidden_cards_revealed", "Hidden revealed"], ["mean_steps", "Steps"],
   ["cycle_stagnation_rate", "Cycle rate"], ["mean_revisit_rate", "Revisit rate"],
+  ["draw_rate", "DRAW rate"], ["recycle_rate", "RECYCLE rate"],
   ["mean_decision_latency_ms", "Mean latency"],
   ["mean_game_p95_decision_latency_ms", "P95 latency"], ["agent_errors", "Errors"],
 ];
@@ -73,16 +75,22 @@ function aggregateRuns(rows) {
     const wins = completed.filter((game) => String(game.win).toLowerCase() === "true").length;
     const timed = completed.reduce((sum, game) => sum + Number(game.timed_decisions || 0), 0);
     const latency = completed.reduce((sum, game) => sum + Number(game.decision_latency_ms_total || 0), 0);
+    const choices = completed.reduce((sum, game) => sum + Number(game.choice_decisions || 0), 0);
+    const draws = completed.reduce((sum, game) => sum + Number(game.draw_choices || 0), 0);
+    const recycles = completed.reduce((sum, game) => sum + Number(game.recycle_choices || 0), 0);
     return {
       agent, games: games.length, wins,
       win_rate: completed.length ? wins / completed.length : 0,
       mean_foundation_cards: mean(completed, "foundation_cards"),
+      mean_max_foundation_cards_seen: mean(completed, "max_foundation_cards_seen"),
       mean_hidden_cards_revealed: mean(completed, "hidden_cards_revealed"),
       mean_steps: mean(completed, "steps"),
       cycle_stagnation_rate: completed.length
         ? completed.filter((game) => game.termination_reason === "cycle_stagnation").length / completed.length
         : 0,
       mean_revisit_rate: mean(completed, "revisit_rate"),
+      draw_rate: choices ? draws / choices : 0,
+      recycle_rate: choices ? recycles / choices : 0,
       mean_decision_latency_ms: timed ? latency / timed : "",
       mean_game_p95_decision_latency_ms: mean(completed, "decision_latency_ms_p95"),
       agent_errors: games.length - completed.length,
@@ -140,6 +148,8 @@ function render(rows, source, kind) {
       metric("Foundation", displayValue("mean_foundation_cards", row.mean_foundation_cards)),
       metric("Steps", displayValue("mean_steps", row.mean_steps)),
       metric("Cycle rate", displayValue("cycle_stagnation_rate", row.cycle_stagnation_rate)),
+      metric("DRAW rate", displayValue("draw_rate", row.draw_rate)),
+      metric("RECYCLE rate", displayValue("recycle_rate", row.recycle_rate)),
       metric("Mean latency", displayValue("mean_decision_latency_ms", row.mean_decision_latency_ms)),
       metric("Errors", displayValue("agent_errors", row.agent_errors)),
     );

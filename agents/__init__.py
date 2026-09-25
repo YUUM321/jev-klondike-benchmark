@@ -2,7 +2,15 @@
 
 from .base import Agent, Decision, Observation
 from .heuristic_agent import HeuristicAgent
-from .jev_agent import JevAgent, JevAPIError
+from .jev_agent import (
+    JevAgent,
+    JevAPIError,
+    JevGuardAgent,
+    JevHistoryAgent,
+    JevMemoryAgent,
+    JevProgressAgent,
+    JevRawAgent,
+)
 from .random_agent import RandomAgent
 
 __all__ = [
@@ -12,5 +20,10 @@ __all__ = [
     "HeuristicAgent",
     "JevAgent",
     "JevAPIError",
+    "JevRawAgent",
+    "JevHistoryAgent",
+    "JevProgressAgent",
+    "JevGuardAgent",
+    "JevMemoryAgent",
     "RandomAgent",
 ]

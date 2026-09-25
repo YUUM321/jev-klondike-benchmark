@@ -17,7 +17,7 @@
 | 模块 | 状态 |
 | --- | --- |
 | Klondike Draw-1 / Draw-3 引擎 | 完成 |
-| Random / Heuristic / Jev Agent | 完成 |
+| Random / Heuristic / 四种 Jev 实验条件 | 完成 |
 | 可见信息隔离与规则测试 | 完成 |
 | 网页 Replay 播放器 | 完成 |
 | 100 局冻结评测集 | 完成 |
@@ -60,14 +60,17 @@ Klondike 的单步动作通常不难判断是否合法，真正困难的是长�
 - 不提供完整状态哈希或牌局 seed；
 - 所有合法动作由引擎生成，Agent 只能从候选项中选择。
 
-所有 Agent 还会获得同一份、仅由可见信息计算的公开历史：
+运行器还会从可见信息计算一份统一的公开历史：
 
 - 当前可见局面是第几次到达；
-- 该可见局面下此前尝试过哪些动作；
-- 最近 8 个已执行动作。
+- 该可见局面下每个动作的尝试次数；
+- 每个动作曾到达哪些可见局面，以及各结果出现次数；
+- 距离上次发现新可见局面的步数；
+- 最近 8 个已执行动作及其公开可见的转移结果。
 
 公开历史使用 `visible_state_hash` 建立身份，不使用包含暗牌和完整 Stock
-顺序的内部 `state_hash`。Heuristic 不再维护 Jev 无法访问的私有循环记忆。
+顺序的内部 `state_hash`。Random 忽略这些字段，Heuristic 用它减少明显重复；
+四种 Jev 条件则按实验定义选择是否接收历史、进展信号或动作过滤。
 
 这个边界由测试覆盖，避免 Jev 或基线策略通过接口意外读取隐藏信息。
 
@@ -77,15 +80,24 @@ Klondike 的单步动作通常不难判断是否合法，真正困难的是长�
 | --- | --- |
 | `RandomAgent` | 在合法动作中均匀随机选择；策略随机数可复现 |
 | `HeuristicAgent` | 优先翻暗牌、安全进入 Foundation、减少明显循环的轻量规则基线 |
-| `JevAgent` | 通过 System One Choice API 在预定义合法动作中选择；API 失败时不使用替代策略 |
+| `JevRawAgent` / `jev_raw` | 只读取当前可见状态、规则和合法动作，不接收历史或进展字段 |
+| `JevHistoryAgent` / `jev_history` | 在 Raw 基础上读取 `public-history-v2`，但不屏蔽任何合法动作 |
+| `JevProgressAgent` / `jev_progress` | 在 History 基础上读取未加权的客观进展指标，不接收动作奖励或手写分数 |
+| `JevGuardAgent` / `jev_guard` | 在 History 基础上优先只提供当前局面尚未尝试的动作；这是显式动作过滤条件 |
 
-Jev 使用固定的简短指令，不注入 HeuristicAgent 的具体规则：
+四种 Jev 条件共享同一条核心指令，不注入 HeuristicAgent 的具体规则：
 
 ```text
 Goal: maximize the probability of eventually winning this Klondike game.
 Choose exactly one of the supplied legal actions.
 Consider future flexibility, hidden-card revelation, and dead-end risk.
 ```
+
+`jev_history` 额外要求使用公开历史；`jev_progress` 再提供客观进展字段；
+`jev_guard` 使用 `untried-actions-first-v1` 过滤候选动作。Guard 不会伪装成
+Pure Jev：若过滤后只剩一个动作，该步记为 `policy_forced`，不计入 Jev API
+决策延迟。`jev` 和 `jev_memory` 只作为旧结果兼容别名，分别对应
+`jev_history` 和 `jev_guard`，新实验应使用完整条件名。
 
 请求同时附带明确的规则合同，包括 Draw 数量、无洗牌无限回收、空列只接收
 K/K 序列、自动翻开暴露暗牌，以及 Foundation 顶牌可以撤回 Tableau；不依赖
@@ -96,12 +108,18 @@ K/K 序列、自动翻开暴露暗牌，以及 Foundation 顶牌可以撤回 Tab
 | 类别 | 指标 |
 | --- | --- |
 | 结果 | `win`、`termination_reason` |
-| 进展 | `foundation_cards`、`hidden_cards_revealed` |
-| 行为 | `steps`、`repeated_states`、`unique_states_visited`、`revisit_rate` |
+| 进展 | `foundation_cards`、`max_foundation_cards_seen`、`hidden_cards_revealed` |
+| 行为 | `steps`、`repeated_states`、`unique_states_visited`、`revisit_rate`、`draw_rate`、`recycle_rate` |
 | 速度 | `elapsed_seconds`、非强制决策 latency total / mean / median / P95 |
 | Jev 诊断 | confidence、完整概率分布、模型版本、usage、重试次数、请求哈希 |
 
-只有一个合法动作时，该步骤标记为 `forced`，并在逐局结果中累计为 `forced_decisions`，不进入决策延迟和 confidence 分析。
+`jev_progress` 还会看到 Foundation 历史峰值、剩余暗牌、距离上次翻牌或
+Foundation 增长的步数，以及无结构进展时完成的 Stock 轮数。这些都是可见事实，
+不是带权 reward，也不会直接告诉模型应该选择哪个动作。
+
+只有一个规则合法动作时，该步骤标记为 `forced`；记忆层只留下一个候选动作时
+标记为 `policy_forced`。两者分别累计为 `forced_decisions` 和
+`policy_forced_decisions`，都不进入 Jev API 决策延迟和 confidence 分析。
 
 终止原因分开保留：
 
@@ -110,7 +128,7 @@ K/K 序列、自动翻开暴露暗牌，以及 Foundation 顶牌可以撤回 Tab
 | `win` | 52 张牌全部进入 Foundation |
 | `hard_dead_end` | 引擎没有任何合法动作 |
 | `cycle_stagnation` | 连续 50 次状态转移都没有到达此前未见的新状态 |
-| `turn_cap` | 达到 2,000 次决策的保护上限 |
+| `turn_cap` | 达到默认 700 次决策的保护上限；可通过 `--max-steps` 显式覆盖 |
 | `agent_error` | Agent、API 或响应校验失败 |
 
 `cycle_stagnation` 表示当前策略陷入循环，不等价于证明牌局无解。
@@ -147,25 +165,26 @@ $env:TYPESAFE_API_KEY = "your-key"
 API key 仅在运行时从环境变量读取，不会写入 manifest、Replay 或结果文件。
 仓库只提交值为空的 `.env.example`；本地 `.env`、`.env.*` 和常见私钥文件均被忽略。
 
-如果所在环境通过本地 HTTPS 代理访问 API，先设置代理变量；Jev Agent 会显式使用该代理并兼容 TLS 1.2：
-
-```powershell
-$env:HTTPS_PROXY = "http://proxy-host:port"
-$env:HTTP_PROXY = "http://proxy-host:port"
-```
-
 先在开发集运行一局 smoke test：
 
 ```powershell
-python run_benchmark.py --agents jev --limit 1
+python run_benchmark.py --agents jev_raw --limit 1
 ```
+
+其余条件应分别运行并保留独立的 Agent 名称：
+
+```powershell
+python run_benchmark.py --agents jev_history jev_progress jev_guard --limit 1
+```
+
+四组结果不能合并后统一标成 Jev。
 
 候选动作的排列 seed 会写入 manifest。正式评测前可在少量开发牌局上检查
 位置敏感性，而不必立刻把完整评测成本扩大三倍：
 
 ```powershell
 foreach ($orderSeed in 0, 1, 2) {
-  python run_benchmark.py --agents jev --limit 10 `
+  python run_benchmark.py --agents jev_raw --limit 10 `
     --jev-option-order-seed $orderSeed `
     --output-dir "results/order-smoke-$orderSeed"
 }
@@ -177,13 +196,15 @@ foreach ($orderSeed in 0, 1, 2) {
 运行冻结的正式评测集：
 
 ```powershell
-python run_benchmark.py --seed-set eval-v0.1 --draw-count 1 --agents random heuristic jev
+python run_benchmark.py --seed-set eval-v0.1 --draw-count 1 `
+  --agents random heuristic jev_raw jev_history jev_progress jev_guard
 ```
 
 Draw-3 必须作为单独实验运行，不能与 Draw-1 混入同一个 summary：
 
 ```powershell
-python run_benchmark.py --seed-set eval-v0.1 --draw-count 3 --agents random heuristic jev
+python run_benchmark.py --seed-set eval-v0.1 --draw-count 3 `
+  --agents random heuristic jev_raw jev_history jev_progress jev_guard
 ```
 
 Jev 会产生真实网络请求，可能带来 API 费用。仓库不会在缺少 key 或请求失败时把其他策略的结果记到 Jev 名下。
@@ -206,7 +227,7 @@ python -m benchmark.generate_seed_set --check
 每次 benchmark 运行还会在 `manifest.json` 中保存：
 
 - 实际 seed 列表与 seed 文件 SHA-256；
-- Python、操作系统和完整命令行；
+- Python、操作系统和已清理本机绝对路径的命令行；
 - Git commit SHA 与运行时工作区是否存在未提交修改；
 - 游戏规则与终止参数；
 - Jev 模型、候选顺序和请求配置；
@@ -244,7 +265,8 @@ python -m http.server 8000 -d web
 - 0.5×–4× 播放速度；
 - Stock、Waste、Foundation 和七列 Tableau；Draw-3 的当前三张会扇形显示，最上层牌标记为可用；
 - 合法动作、选中动作、概率与 confidence；
-- 每一步明确区分动作执行前与执行后牌面，避免概率和画面错位；
+- 每一步明确区分动作执行前与执行后牌面、合法动作和公开历史，避免决策上下文与画面错位；
+- 最终帧解释 `cycle_stagnation`、`turn_cap` 等终止原因，并明确它们是否仍留有合法动作；
 - 翻牌、Foundation 变化、公开历史和当前决策耗时；
 - `summary.csv` 与 `runs.csv` 的 Agent 汇总视图。
 
@@ -252,7 +274,7 @@ python -m http.server 8000 -d web
 
 ```powershell
 $env:TYPESAFE_API_KEY = "your-key"
-python record_game.py --agent jev --seed 37 --output web/replay.json
+python record_game.py --agent jev_progress --seed 37 --output web/replay.json
 python -m http.server 8000 -d web
 ```
 
@@ -265,10 +287,11 @@ python -m http.server 8000 -d web
 http://localhost:8000/?replay=replay.json
 ```
 
-Replay schema v2 同时保存每次决策的 `state_before` 与 `state_after`，并把当时
-的候选动作、概率和选择绑定在同一帧。它只保存 Agent 当时可见的状态，不包含
-暗牌身份，也不会重新执行或推断动作。播放器仍可读取旧 schema v1，并在浏览器
-内转换为新的前后状态语义。
+Replay schema v2 同时保存每次决策的 `state_before`、`state_after`，以及前后各自
+对应的合法动作和公开历史，并把决策时的候选动作、概率和选择绑定在同一帧。
+它只保存 Agent 当时可见的状态，不包含暗牌身份。已有 v2 原始日志可以在本地
+重新执行已记录动作并补齐执行后上下文，不需要重新调用 Agent；播放器仍可读取
+旧 schema v1，并在浏览器内转换为新的前后状态语义。
 
 每次启用决策日志的 benchmark 都会自动写出 `replays/`，无需再次调用 Jev。旧结果也可以从原始 JSONL 离线导出：
 
@@ -300,7 +323,7 @@ run_game.py                    单局本地调试入口
 - 52 张牌始终唯一且不会丢失；
 - 所有生成动作都合法，并在执行后保持规则不变量；
 - 暗牌身份和 Stock 顺序不会进入 Agent Observation；
-- 所有 Agent 获得相同的、仅基于可见状态的有限历史；
+- 公开历史与进展字段只由可见状态计算，四种 Jev 条件的输入边界彼此隔离；
 - Draw-1 与 Draw-3 回收后保持正确抽牌顺序且不洗牌；
 - Draw-3 每次显示当前一至三张牌，并且只有 Waste 顶牌可以移动；
 - 完整状态哈希包含 Tableau、Foundation、Stock 和 Waste 的完整顺序；
@@ -333,7 +356,8 @@ python -m unittest discover -s tests -v
 - [ ] 发布至少一个带注释的 Jev 失败 replay；
 - [ ] 增加 paired bootstrap 置信区间；
 - [ ] 对每个 seed 重复运行 Jev，估计策略方差；
-- [ ] 比较 Pure Jev、Jev + heuristic features 和有限步 lookahead；
+- [x] 隔离 Raw、History、Progress 和 Guard 四种 Jev 条件；
+- [ ] 增加 Jev + heuristic features 与有限步 lookahead；
 - [ ] 加入完整信息 solver，用于区分策略失败与不可解牌局。
 
 ## 参考

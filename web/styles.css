@@ -239,6 +239,14 @@ button:disabled { cursor: not-allowed; opacity: .38; }
 .action-text { min-height: 55px; margin: 20px 0 14px; color: #f6f5ef; font: 500 18px/1.45 Georgia, serif; }
 .event-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .event-chip { padding: 6px 9px; border-radius: 6px; color: var(--gold); background: rgba(244,199,107,.09); font-size: 10px; font-weight: 800; letter-spacing: .03em; }
+.termination-notice { margin-top: 14px; padding: 12px 13px; border: 1px solid rgba(244,199,107,.28); border-radius: 10px; background: rgba(244,199,107,.08); }
+.termination-notice strong, .termination-notice span { display: block; }
+.termination-notice strong { color: var(--gold); font-size: 12px; }
+.termination-notice span { margin-top: 5px; color: #d7ded9; font-size: 11px; line-height: 1.55; }
+.termination-notice[data-reason="win"] { border-color: rgba(200,243,106,.3); background: rgba(200,243,106,.08); }
+.termination-notice[data-reason="win"] strong { color: var(--lime); }
+.termination-notice[data-reason="agent_error"] { border-color: rgba(255,147,159,.32); background: rgba(255,147,159,.08); }
+.termination-notice[data-reason="agent_error"] strong { color: #ff939f; }
 .muted, .empty-copy { color: var(--muted); }
 .muted { font-size: 11px; }
 .empty-copy { font-size: 12px; line-height: 1.5; }
