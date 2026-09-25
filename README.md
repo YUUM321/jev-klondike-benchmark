@@ -1,91 +1,122 @@
 # Jev × Klondike Benchmark
 
+**English** | [简体中文](README.zh-CN.md)
+
 [![Tests](https://github.com/YUUM321/jev-klondike-benchmark/actions/workflows/tests.yml/badge.svg)](https://github.com/YUUM321/jev-klondike-benchmark/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> A reproducible benchmark for studying fast model decisions, limited public
+> Reproducible infrastructure for studying fast model decisions, limited public
 > memory, and long-horizon failure modes in Klondike Solitaire.
 
-一个可复现的 Klondike Solitaire（经典纸牌接龙）基准，用于比较 **Jev**、随机策略和轻量人工启发式策略在同一批牌局上的表现。
+This repository provides a deterministic Klondike engine, local baselines, four
+Jev ablation conditions, frozen deal sets, detailed metrics, resumable runs, and
+a browser-based replay viewer. It is designed to answer a narrower and more
+useful question than “can a model play Solitaire?”:
 
-项目关注的不只是胜率，还记录每一步决策、可见状态、候选动作、置信度、响应延迟和失败轨迹，以研究一个核心问题：
+> How much external structure does a fast System-One decision model need before
+> its local choices become useful in a partially observable, long-horizon task?
 
-> 在看不到暗牌、且只能从合法动作中选择的条件下，Jev 的快速决策能力可以把 Klondike 玩到什么程度？它又会在哪些局面中陷入循环或高置信度失败？
+## Project status and scope
 
-## 项目状态
-
-| 模块 | 状态 |
+| Component | Status |
 | --- | --- |
-| Klondike Draw-1 / Draw-3 引擎 | 完成 |
-| Random / Heuristic / 四种 Jev 实验条件 | 完成 |
-| 可见信息隔离与规则测试 | 完成 |
-| 网页 Replay 播放器 | 完成 |
-| 100 局冻结评测集 | 完成 |
-| 正式 Jev × Baselines 结果 | **待运行** |
+| Klondike Draw-1 and Draw-3 engine | Complete |
+| Random and heuristic baselines | Complete |
+| Raw / History / Progress / Guard Jev conditions | Complete |
+| Hidden-information boundary and rule tests | Complete |
+| Frozen 100-deal evaluation set | Complete |
+| Checkpoint, resume, provenance, and metrics | Complete |
+| Browser replay and CSV viewer | Complete |
+| Large-scale remote Jev results | Not included in v0.1; optional future work |
 
-当前仓库包含完整的 v0.1 实验基础设施，但尚未发布正式 100 局结果。README 中不会预先填写或推断 Jev 的表现。
+The v0.1 deliverable is the benchmark protocol and reproducible evaluation
+infrastructure, not an official remote score. Large-scale Jev results are
+intentionally not published because reliable evaluation requires a stable
+external API environment. The repository never substitutes partial runs or
+fallback policies for missing Jev results.
 
-## 为什么选择 Klondike
+Included in v0.1:
 
-Klondike 的单步动作通常不难判断是否合法，真正困难的是长期后果：一个眼前合理的动作，可能在十几步后锁死关键牌；Stock 回收还允许 Agent 在合法状态之间反复循环。Draw-3 中，移走一张 Waste 牌会重新改变下一轮的三张分组，进一步增加了规划难度。
+- deterministic game rules and legal-action generation;
+- strict visible-information observations;
+- local baselines and four isolated Jev conditions;
+- frozen development and held-out evaluation deals;
+- per-decision logging, progress metrics, latency metrics, and provenance;
+- crash-safe checkpoints, exact resume, replay export, and CI tests.
 
-这使它适合观察：
+Not included in v0.1:
 
-- 局部直觉能否转化为长期进展；
-- Agent 是否主动创造翻开暗牌的机会；
-- Agent 是否会反复撤销已经做过的决定；
-- 简单规则和快速模型决策之间有多大差距；
-- 延迟、置信度与最终结果之间是否存在关系。
+- an official Jev win-rate claim;
+- a published large-scale remote API run;
+- a complete-information solver for proving whether a deal is solvable.
 
-## Benchmark 设计
+## Why Klondike?
 
-### 游戏规则
+Most individual Klondike moves are easy to validate. Their long-term
+consequences are not. A move that looks harmless can block a critical card many
+turns later, while unlimited stock recycling allows a policy to cycle through
+legal states without making progress. Draw-3 adds another dependency: removing
+one waste card changes how later stock passes are grouped.
 
-- Klondike Draw-1 或 Draw-3，默认 Draw-1；不同 draw count 视为独立实验条件；
-- Stock 可无限次回收，回收时不洗牌；
-- Tableau 按点数递减、红黑交替排列；
-- 空列只接受 K 或以 K 开头的合法序列；
-- Foundation 按同花色从 A 到 K；
-- Foundation 顶牌可以移回 Tableau；
-- Tableau 暗牌暴露后在同一次状态转移中自动翻开；
-- 只有 Waste 顶牌可以移动；
-- 52 张牌全部进入 Foundation 即获胜。
+This makes Klondike useful for studying:
 
-### 信息边界
+- whether local intuition produces durable progress;
+- whether an agent creates opportunities to reveal hidden tableau cards;
+- whether it repeatedly reverses earlier decisions;
+- how a lightweight hand-written policy compares with a fast model;
+- how confidence and latency relate to eventual outcomes.
 
-引擎持有完整牌局，但 Agent 只能收到玩家可见的 `Observation`：
+## Benchmark protocol
 
-- 暗牌统一显示为 `XX`；
-- 不提供 Stock 内部顺序；
-- 不提供完整状态哈希或牌局 seed；
-- 所有合法动作由引擎生成，Agent 只能从候选项中选择。
+### Game rules
 
-运行器还会从可见信息计算一份统一的公开历史：
+- Klondike Draw-1 or Draw-3; Draw-1 is the default and each draw count is a
+  separate experimental condition.
+- Unlimited stock recycling with no reshuffle.
+- Tableau builds downward by rank with alternating colors.
+- Empty tableau columns accept only a King or a King-led sequence.
+- Foundations build by suit from Ace to King.
+- A foundation top card may move back to the tableau.
+- A newly exposed tableau card flips automatically in the same transition.
+- Only the top waste card is playable.
+- The game is won when all 52 cards reach the foundations.
 
-- 当前可见局面是第几次到达；
-- 该可见局面下每个动作的尝试次数；
-- 每个动作曾到达哪些可见局面，以及各结果出现次数；
-- 距离上次发现新可见局面的步数；
-- 最近 8 个已执行动作及其公开可见的转移结果。
+### Information boundary
 
-公开历史使用 `visible_state_hash` 建立身份，不使用包含暗牌和完整 Stock
-顺序的内部 `state_hash`。Random 忽略这些字段，Heuristic 用它减少明显重复；
-四种 Jev 条件则按实验定义选择是否接收历史、进展信号或动作过滤。
+The engine owns the complete deal, but an agent receives only a player-visible
+`Observation`:
 
-这个边界由测试覆盖，避免 Jev 或基线策略通过接口意外读取隐藏信息。
+- hidden cards are represented as `XX`;
+- stock order is never exposed;
+- the deal seed and full internal state hash are never exposed;
+- the engine generates every legal action, and the agent must choose one of
+  those actions.
 
-### 对比 Agent
+The runner also derives public history exclusively from visible information:
 
-| Agent | 说明 |
+- visits to the current visible state;
+- per-action attempt counts from that state;
+- visible outcome counts for each attempted action;
+- steps since a new visible state was reached;
+- the last eight public actions and visible transitions.
+
+Public history uses `visible_state_hash`. It never uses the internal
+`state_hash`, which includes hidden cards and the full stock and waste order.
+Random ignores public history, Heuristic uses it to reduce obvious repetition,
+and each Jev condition receives only the context defined below.
+
+### Agents and ablations
+
+| Agent | Context and policy |
 | --- | --- |
-| `RandomAgent` | 在合法动作中均匀随机选择；策略随机数可复现 |
-| `HeuristicAgent` | 优先翻暗牌、安全进入 Foundation、减少明显循环的轻量规则基线 |
-| `JevRawAgent` / `jev_raw` | 只读取当前可见状态、规则和合法动作，不接收历史或进展字段 |
-| `JevHistoryAgent` / `jev_history` | 在 Raw 基础上读取 `public-history-v2`，但不屏蔽任何合法动作 |
-| `JevProgressAgent` / `jev_progress` | 在 History 基础上读取未加权的客观进展指标，不接收动作奖励或手写分数 |
-| `JevGuardAgent` / `jev_guard` | 在 History 基础上优先只提供当前局面尚未尝试的动作；这是显式动作过滤条件 |
+| `RandomAgent` | Uniform random choice over legal actions; reproducible policy RNG |
+| `HeuristicAgent` | Small deterministic baseline favoring hidden-card reveals, safe foundation moves, and less repetition |
+| `JevRawAgent` / `jev_raw` | Current visible state, explicit rules, and legal actions only |
+| `JevHistoryAgent` / `jev_history` | Raw plus `public-history-v2`; no legal action is filtered |
+| `JevProgressAgent` / `jev_progress` | History plus unweighted observable progress facts; no action rewards or hand-written score |
+| `JevGuardAgent` / `jev_guard` | History plus `untried-actions-first-v1`, which temporarily filters previously tried actions when alternatives remain |
 
-四种 Jev 条件共享同一条核心指令，不注入 HeuristicAgent 的具体规则：
+All four Jev conditions share the same core instruction:
 
 ```text
 Goal: maximize the probability of eventually winning this Klondike game.
@@ -93,94 +124,111 @@ Choose exactly one of the supplied legal actions.
 Consider future flexibility, hidden-card revelation, and dead-end risk.
 ```
 
-`jev_history` 额外要求使用公开历史；`jev_progress` 再提供客观进展字段；
-`jev_guard` 使用 `untried-actions-first-v1` 过滤候选动作。Guard 不会伪装成
-Pure Jev：若过滤后只剩一个动作，该步记为 `policy_forced`，不计入 Jev API
-决策延迟。`jev` 和 `jev_memory` 只作为旧结果兼容别名，分别对应
-`jev_history` 和 `jev_guard`，新实验应使用完整条件名。
+History asks the model to use public history. Progress adds observable facts
+such as the foundation peak, remaining hidden tableau cards, steps since the
+last reveal or foundation increase, and stock passes without structural
+progress. These are facts, not a reward function. Guard is reported as an
+explicit intervention rather than being labeled “pure Jev.”
 
-请求同时附带明确的规则合同，包括 Draw 数量、无洗牌无限回收、空列只接收
-K/K 序列、自动翻开暴露暗牌，以及 Foundation 顶牌可以撤回 Tableau；不依赖
-不同实现可能解释不一致的“standard Klondike”简称。
+`jev` and `jev_memory` remain compatibility aliases for `jev_history` and
+`jev_guard`. New experiments should use the full condition names.
 
-## 评测指标
+### Stable option ordering
 
-| 类别 | 指标 |
+Seeded option ordering uses `stable-visible-action-v2`. Each action receives a
+stable priority derived from:
+
+```text
+option-order protocol version
++ explicit option-order seed
++ visible state hash
++ action identity
+```
+
+It does not depend on the game seed, hidden cards, full state, step number, or
+the engine's input enumeration order. Revisiting the same visible state keeps
+the same option order, and Guard subsets preserve the relative order of the
+remaining actions. The protocol version and seed are stored in `manifest.json`.
+
+## Metrics and termination
+
+| Category | Fields |
 | --- | --- |
-| 结果 | `win`、`termination_reason` |
-| 进展 | `foundation_cards`、`max_foundation_cards_seen`、`hidden_cards_revealed` |
-| 行为 | `steps`、`repeated_states`、`unique_states_visited`、`revisit_rate`、`draw_rate`、`recycle_rate` |
-| 速度 | `elapsed_seconds`、非强制决策 latency total / mean / median / P95 |
-| Jev 诊断 | confidence、完整概率分布、模型版本、usage、重试次数、请求哈希 |
+| Outcome | `win`, `termination_reason` |
+| Progress | `foundation_cards`, `max_foundation_cards_seen`, `hidden_cards_revealed` |
+| Behavior | `steps`, `repeated_states`, `unique_states_visited`, `revisit_rate`, `draw_rate`, `recycle_rate` |
+| Timing | elapsed time and non-forced decision latency total / mean / median / P95 |
+| Jev diagnostics | confidence, full probability distribution, model, usage, retries, request hash |
 
-`jev_progress` 还会看到 Foundation 历史峰值、剩余暗牌、距离上次翻牌或
-Foundation 增长的步数，以及无结构进展时完成的 Stock 轮数。这些都是可见事实，
-不是带权 reward，也不会直接告诉模型应该选择哪个动作。
+A rule-mandated single action is marked `forced`. If Guard leaves exactly one
+candidate from a larger legal set, it is marked `policy_forced`. Neither is
+included in model latency or confidence analysis.
 
-只有一个规则合法动作时，该步骤标记为 `forced`；记忆层只留下一个候选动作时
-标记为 `policy_forced`。两者分别累计为 `forced_decisions` 和
-`policy_forced_decisions`，都不进入 Jev API 决策延迟和 confidence 分析。
+Termination reasons remain distinct:
 
-终止原因分开保留：
-
-| 原因 | 定义 |
+| Reason | Definition |
 | --- | --- |
-| `win` | 52 张牌全部进入 Foundation |
-| `hard_dead_end` | 引擎没有任何合法动作 |
-| `cycle_stagnation` | 连续 50 次状态转移都没有到达此前未见的新状态 |
-| `turn_cap` | 达到默认 700 次决策的保护上限；可通过 `--max-steps` 显式覆盖 |
-| `agent_error` | Agent、API 或响应校验失败 |
+| `win` | All 52 cards are in the foundations |
+| `hard_dead_end` | The engine has no legal action |
+| `cycle_stagnation` | 50 consecutive transitions reach no previously unseen full state |
+| `turn_cap` | The run reaches the default 700-decision safety cap |
+| `agent_error` | The agent, remote API, or response validation fails |
 
-`cycle_stagnation` 表示当前策略陷入循环，不等价于证明牌局无解。
-`agent_error` 属于未完成运行，不计入胜率分母，也不会进入
-`high_confidence_losses.jsonl`。
+`cycle_stagnation` means the current policy is cycling; it does not prove that
+the deal is unsolvable. `agent_error` is an incomplete run, is excluded from the
+win-rate denominator, and never enters `high_confidence_losses.jsonl`.
 
-## 快速开始
+## Quick start
 
-要求 Python 3.10+。游戏引擎、基线和测试只使用 Python 标准库。
+Python 3.10 or newer is required. The engine, local baselines, and test suite use
+only the Python standard library.
 
 ```powershell
+git clone https://github.com/YUUM321/jev-klondike-benchmark.git
 cd jev-klondike-benchmark
 python -m unittest discover -s tests -v
 python run_benchmark.py --agents random heuristic
 ```
 
-默认使用开发 seed，不会意外在正式评测集上运行。
+The default command uses development seeds and cannot accidentally consume the
+held-out evaluation set.
 
-### 运行一局
+Run one local game:
 
 ```powershell
 python run_game.py --agent heuristic --seed 37
 python run_game.py --agent heuristic --seed 37 --draw-count 3
 ```
 
-### 运行 Jev
+### Run Jev
 
-设置 TypeSafe API key：
+Provide the TypeSafe API key at runtime. It is never written to manifests,
+replays, or result files.
+
+PowerShell:
 
 ```powershell
 $env:TYPESAFE_API_KEY = "your-key"
 ```
 
-API key 仅在运行时从环境变量读取，不会写入 manifest、Replay 或结果文件。
-仓库只提交值为空的 `.env.example`；本地 `.env`、`.env.*` 和常见私钥文件均被忽略。
+POSIX shells:
 
-先在开发集运行一局 smoke test：
+```bash
+export TYPESAFE_API_KEY="your-key"
+```
+
+Run a one-deal development smoke test before any larger experiment:
 
 ```powershell
 python run_benchmark.py --agents jev_raw --limit 1
-```
-
-其余条件应分别运行并保留独立的 Agent 名称：
-
-```powershell
 python run_benchmark.py --agents jev_history jev_progress jev_guard --limit 1
 ```
 
-四组结果不能合并后统一标成 Jev。
+The four conditions are separate treatments and must not be merged into a
+single “Jev” row. Remote calls may incur API charges, and failures never fall
+back to a local policy.
 
-候选动作的排列 seed 会写入 manifest。正式评测前可在少量开发牌局上检查
-位置敏感性，而不必立刻把完整评测成本扩大三倍：
+To inspect option-position sensitivity on development deals:
 
 ```powershell
 foreach ($orderSeed in 0, 1, 2) {
@@ -190,87 +238,106 @@ foreach ($orderSeed in 0, 1, 2) {
 }
 ```
 
-若三个排列的结果差异明显，应把 option-order seed 升级为正式实验变量；否则
-在正式 v0.1 中固定并报告一个 seed。
+### Optional held-out evaluation
 
-运行冻结的正式评测集：
+The frozen set is available for independent remote runs:
 
 ```powershell
 python run_benchmark.py --seed-set eval-v0.1 --draw-count 1 `
   --agents random heuristic jev_raw jev_history jev_progress jev_guard
 ```
 
-Draw-3 必须作为单独实验运行，不能与 Draw-1 混入同一个 summary：
+Draw-3 is a separate experiment and must not be mixed into the same summary:
 
 ```powershell
 python run_benchmark.py --seed-set eval-v0.1 --draw-count 3 `
   --agents random heuristic jev_raw jev_history jev_progress jev_guard
 ```
 
-Jev 会产生真实网络请求，可能带来 API 费用。仓库不会在缺少 key 或请求失败时把其他策略的结果记到 Jev 名下。
+### Resume an interrupted run
 
-## 冻结 Seed 与可复现性
+Each successful Jev decision is flushed and synced to a per-game checkpoint.
+After resolving the interruption, resume the original result directory:
 
-仓库维护两套 seed：
+```powershell
+python run_benchmark.py --resume results/<run-directory>
+```
 
-- [`benchmark/seeds/dev.txt`](benchmark/seeds/dev.txt)：0–99，用于开发、测试和调参；
-- [`benchmark/seeds/eval-v0.1.txt`](benchmark/seeds/eval-v0.1.txt)：100 个正式评测 seed，不依据任何 Agent 结果筛选。
+Resume reconstructs the game from committed actions, verifies visible and full
+state hashes, restores public history and progress counters, and refuses to run
+if benchmark source semantics have changed.
 
-正式评测集由公开 master seed 和版本无关的 SHA-256 counter 算法生成。完整合同及文件哈希记录在 [`benchmark/seeds/eval-v0.1.json`](benchmark/seeds/eval-v0.1.json)。
+## Frozen deals and provenance
 
-验证冻结文件：
+Two seed sets are versioned:
+
+- [`benchmark/seeds/dev.txt`](benchmark/seeds/dev.txt): seeds 0–99 for
+  development, testing, and tuning;
+- [`benchmark/seeds/eval-v0.1.txt`](benchmark/seeds/eval-v0.1.txt): 100 held-out
+  seeds selected independently of agent results.
+
+The evaluation set is generated from a public master seed with a
+version-independent SHA-256 counter algorithm. Its contract and artifact hashes
+are stored in
+[`benchmark/seeds/eval-v0.1.json`](benchmark/seeds/eval-v0.1.json).
+
+Verify the frozen artifacts:
 
 ```powershell
 python -m benchmark.generate_seed_set --check
 ```
 
-每次 benchmark 运行还会在 `manifest.json` 中保存：
+Every run writes a `manifest.json` containing:
 
-- 实际 seed 列表与 seed 文件 SHA-256；
-- Python、操作系统和已清理本机绝对路径的命令行；
-- Git commit SHA 与运行时工作区是否存在未提交修改；
-- 游戏规则与终止参数；
-- Jev 模型、候选顺序和请求配置；
-- 计时范围及 percentile 算法。
+- the exact seed list and seed-file SHA-256;
+- Python and operating-system versions plus a path-sanitized command line;
+- Git commit and dirty-worktree state;
+- game rules and termination settings;
+- Jev model, option-order protocol, and request configuration;
+- timing scope and percentile method;
+- a source fingerprint used to protect resume semantics.
 
-## 输出文件
+## Output files
 
-每次运行创建独立的 `results/<UTC timestamp>/`：
+Each run creates `results/<UTC timestamp>/`:
 
 ```text
-manifest.json                 实验配置与复现信息
-runs.jsonl                    逐局原始结果
-runs.csv                      逐局指标
-summary.csv                   按 Agent 汇总的结果与延迟
-decisions.jsonl               Jev 的逐步观察、候选项和选择
-high_confidence_losses.jsonl  高置信度失败的候选审查记录
-replays/<agent>-seed-<n>.json 自动生成的逐局网页 Replay
+manifest.json                 Configuration and provenance
+runs.jsonl                    One raw record per game
+runs.csv                      Per-game metrics
+summary.csv                   Metrics aggregated by agent
+decisions.jsonl               Per-decision observations, candidates, and choices
+high_confidence_losses.jsonl  Candidate steps for manual failure review
+replays/<agent>-seed-<n>.json Browser-ready game replays
 ```
 
-CSV 用于统计展示，JSONL 用于保存可流式追加的原始记录，`replays/*.json` 才是牌桌播放器直接读取的逐帧文件。三者内容层级不同，不能互相替代。
+CSV is intended for analysis and tables. JSONL preserves stream-friendly raw
+records. Only `replays/*.json` contains the frame-oriented format consumed by
+the board viewer.
 
-`high_confidence_losses.jsonl` 只用于定位值得复查的步骤。一次高置信度选择出现在失败牌局中，并不能单独证明该选择导致了失败。
+A high-confidence decision in a losing game is only a review candidate. It does
+not, by itself, prove that the selected action caused the loss.
 
-## Replay Viewer
+## Replay and CSV viewer
 
-仓库包含一个零构建依赖的 HTML/CSS/JavaScript 播放器：
+The repository includes a zero-build HTML/CSS/JavaScript viewer:
 
 ```powershell
 python -m http.server 8000 -d web
 ```
 
-打开 [http://localhost:8000](http://localhost:8000) 即可查看内置示例，也可以拖入自己的文件。播放器支持：
+Open [http://localhost:8000](http://localhost:8000) to load the reviewed example
+or drag in a local replay. The viewer supports:
 
-- 播放、暂停、单步和时间轴跳转；
-- 0.5×–4× 播放速度；
-- Stock、Waste、Foundation 和七列 Tableau；Draw-3 的当前三张会扇形显示，最上层牌标记为可用；
-- 合法动作、选中动作、概率与 confidence；
-- 每一步明确区分动作执行前与执行后牌面、合法动作和公开历史，避免决策上下文与画面错位；
-- 最终帧解释 `cycle_stagnation`、`turn_cap` 等终止原因，并明确它们是否仍留有合法动作；
-- 翻牌、Foundation 变化、公开历史和当前决策耗时；
-- `summary.csv` 与 `runs.csv` 的 Agent 汇总视图。
+- play, pause, single-step navigation, timeline seeking, and 0.5×–4× speed;
+- Stock, Waste, Foundation, and seven Tableau columns;
+- Draw-3 waste packets with only the top card marked playable;
+- pre-action and post-action boards, legal actions, history, and progress;
+- selected-action probabilities, confidence, and decision latency;
+- explicit explanations for `cycle_stagnation`, `turn_cap`, and other endings;
+- local rendering of either `summary.csv` or `runs.csv` without uploading data.
 
-录制一局真实 Jev replay：
+Record a single Jev replay:
 
 ```powershell
 $env:TYPESAFE_API_KEY = "your-key"
@@ -278,89 +345,98 @@ python record_game.py --agent jev_progress --seed 37 --output web/replay.json
 python -m http.server 8000 -d web
 ```
 
-`web/replay.json` 是本地生成文件，已被 Git 忽略；仓库展示使用经过审查的
-`web/replay.example.json`。
-
-然后访问：
+Then open:
 
 ```text
 http://localhost:8000/?replay=replay.json
 ```
 
-Replay schema v2 同时保存每次决策的 `state_before`、`state_after`，以及前后各自
-对应的合法动作和公开历史，并把决策时的候选动作、概率和选择绑定在同一帧。
-它只保存 Agent 当时可见的状态，不包含暗牌身份。已有 v2 原始日志可以在本地
-重新执行已记录动作并补齐执行后上下文，不需要重新调用 Agent；播放器仍可读取
-旧 schema v1，并在浏览器内转换为新的前后状态语义。
+`web/replay.json` is ignored by Git. The repository ships the reviewed
+`web/replay.example.json`. Replay schema v2 stores aligned pre/post states,
+legal actions, public history, progress, probabilities, and the chosen action.
+It contains no hidden-card identities.
 
-每次启用决策日志的 benchmark 都会自动写出 `replays/`，无需再次调用 Jev。旧结果也可以从原始 JSONL 离线导出：
+Existing v2 decision logs can be exported without calling Jev again:
 
 ```powershell
 python -m benchmark.export_replays results/<run-directory>
 ```
 
-要直接查看 CSV，可以在主页面选择“打开结果 CSV”，或双击 [`web/summary.html`](web/summary.html)。两者均支持 `summary.csv` 和 `runs.csv`，文件只在浏览器本地读取。
+The main page and [`web/summary.html`](web/summary.html) both accept
+`summary.csv` and `runs.csv` locally.
 
-## 项目结构
+## Repository layout
 
 ```text
-agents/                        Random、Heuristic 与 Jev Agent
-benchmark/                     Runner、指标、Replay 格式与 seed 合同
-benchmark/seeds/               开发集与冻结评测集
-solitaire/                     Klondike 状态、规则与合法动作
-tests/                         规则、可见性、确定性与 Runner 测试
-web/                           Replay Viewer
-record_game.py                 生成网页可读的 replay.json
-run_benchmark.py               Benchmark 入口
-run_game.py                    单局本地调试入口
+agents/                        Random, Heuristic, and Jev agents
+benchmark/                     Runner, metrics, replay format, and seed contract
+benchmark/seeds/               Development and held-out seed sets
+solitaire/                     Klondike state, rules, and legal actions
+tests/                         Rule, visibility, determinism, runner, and web tests
+web/                           Replay and CSV viewer
+record_game.py                 Record one browser-ready replay
+run_benchmark.py               Benchmark entry point
+run_game.py                    Local single-game debugging entry point
 ```
 
-## 正确性测试
+## Correctness and CI
 
-测试覆盖的关键不变量包括：
+The test suite covers the central invariants:
 
-- 相同 seed 产生相同初始牌局；
-- 52 张牌始终唯一且不会丢失；
-- 所有生成动作都合法，并在执行后保持规则不变量；
-- 暗牌身份和 Stock 顺序不会进入 Agent Observation；
-- 公开历史与进展字段只由可见状态计算，四种 Jev 条件的输入边界彼此隔离；
-- Draw-1 与 Draw-3 回收后保持正确抽牌顺序且不洗牌；
-- Draw-3 每次显示当前一至三张牌，并且只有 Waste 顶牌可以移动；
-- 完整状态哈希包含 Tableau、Foundation、Stock 和 Waste 的完整顺序；
-- 暴露暗牌在同一次状态转移中自动翻开；
-- Random 与 Heuristic 在相同 seed 下可复现；
-- Jev 缺少 key 或 API 失败时不会静默 fallback；
-- `agent_error` 不会被计作普通 loss 或高置信失败；
-- Replay 中动作前状态、候选动作、选择和动作后状态严格对齐；
-- 正式 seed 集可重新生成、无重复且不与开发集重叠。
+- identical seeds produce identical deals;
+- all 52 cards remain unique and no card is lost;
+- every generated action is legal and preserves state invariants;
+- hidden identities and stock order never enter agent observations;
+- public history and progress contain only visible facts;
+- Draw-1 and Draw-3 recycle without reshuffling and preserve draw order;
+- the full state hash includes complete tableau, foundation, stock, and waste
+  order;
+- exposed hidden cards flip in the same transition;
+- Random and Heuristic are reproducible;
+- Jev conditions have isolated input payloads;
+- option ordering is stable across revisits, steps, input order, and Guard
+  subsets;
+- missing keys and API errors never trigger a silent fallback;
+- interrupted runs resume only from verified state;
+- replay frames align state, candidates, choice, and outcome;
+- the held-out seed set is reproducible, unique, and disjoint from development.
 
-运行测试：
+Run all checks:
 
 ```powershell
 python -m unittest discover -s tests -v
+python -m benchmark.generate_seed_set --check
+node tests/test_web_summary.js
 ```
 
-## 结果解释与限制
+GitHub Actions also checks JavaScript syntax, JSON artifacts, and whitespace.
 
-- 100 局适合 v0.1 探索和失败案例分析，不足以支撑广泛的总体能力结论；
-- 三个 Agent 必须在相同 seed 上进行配对比较，不能只比较彼此独立的平均值；
-- Seed 固定发牌，但不保证远程 Jev 调用完全确定；后续版本应增加每个 seed 的重复运行；
-- Jev 延迟包含请求编码、网络往返、响应解析、重试和退避，受运行地区与服务负载影响；
-- 本地基线的执行时间只是工程参照，不应与远程 API 延迟一起解释为策略能力；
-- `confidence` 是模型输出，需要单独做 calibration 分析，不能直接视为动作正确率；
-- 本项目尚未包含判断牌局理论可解性的完整信息搜索器。
+## Interpretation boundaries
 
-## Roadmap
+- One hundred deals support exploratory v0.1 analysis, not broad capability
+  claims.
+- Every condition must run on the same seeds for paired comparison.
+- Fixed deals do not make remote Jev responses deterministic; repeated runs are
+  needed to estimate policy variance.
+- Jev latency includes encoding, network transit, parsing, retries, and backoff.
+- Local baseline runtime must not be interpreted as directly comparable model
+  latency.
+- Reported confidence is model output, not calibrated action correctness.
+- Without a complete-information solver, a policy failure cannot establish that
+  the underlying deal was solvable.
 
-- [ ] 完成并发布 `eval-v0.1` 的 100 局正式结果；
-- [ ] 发布至少一个带注释的 Jev 失败 replay；
-- [ ] 增加 paired bootstrap 置信区间；
-- [ ] 对每个 seed 重复运行 Jev，估计策略方差；
-- [x] 隔离 Raw、History、Progress 和 Guard 四种 Jev 条件；
-- [ ] 增加 Jev + heuristic features 与有限步 lookahead；
-- [ ] 加入完整信息 solver，用于区分策略失败与不可解牌局。
+## Optional future work
 
-## 参考
+These are extensions, not v0.1 completion requirements:
+
+- publish an independently executed `eval-v0.1` run and annotated failure
+  replays;
+- add paired bootstrap confidence intervals and repeated Jev trials per seed;
+- compare Jev with heuristic features and bounded lookahead;
+- add a complete-information solver to separate policy failure from deal
+  unsolvability.
+
+## References
 
 - [TypeSafe SDK](https://github.com/typesafe-ai/typesafe-sdk-js)
 - [Jev API Reference](https://jev-agent.com/api-reference)

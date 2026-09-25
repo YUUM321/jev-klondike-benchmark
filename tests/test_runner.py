@@ -567,7 +567,7 @@ class RunnerTests(unittest.TestCase):
             places=6,
         )
 
-    def test_jev_option_order_does_not_depend_on_hidden_state_or_game_seed(self) -> None:
+    def test_jev_option_order_is_stable_for_visible_state_and_action(self) -> None:
         engine = KlondikeEngine()
         for seed in range(100):
             engine.reset(seed)
@@ -580,12 +580,12 @@ class RunnerTests(unittest.TestCase):
             hidden_variant.stock[0],
         )
 
-        def observation_for(game):
+        def observation_for(game, *, step: int):
             return Observation(
                 visible_state=game.get_visible_state(),
                 visible_text=game.visible_text(),
                 visible_state_hash=game.visible_state_hash(),
-                step=game.steps,
+                step=step,
                 action_labels={
                     action: game.action_label(action) for action in actions
                 },
@@ -595,9 +595,22 @@ class RunnerTests(unittest.TestCase):
         second_agent = JevAgent(option_order_seed=17)
         first_agent.reset(1)
         second_agent.reset(999)
-        first_order = first_agent._ordered(observation_for(engine), actions)
-        second_order = second_agent._ordered(observation_for(hidden_variant), actions)
+        first_order = first_agent._ordered(
+            observation_for(engine, step=0), actions
+        )
+        second_order = second_agent._ordered(
+            observation_for(hidden_variant, step=999), list(reversed(actions))
+        )
         self.assertEqual(first_order, second_order)
+
+        subset = list(reversed(first_order[1:]))
+        subset_order = first_agent._ordered(
+            observation_for(engine, step=50), subset
+        )
+        self.assertEqual(subset_order, first_order[1:])
+        self.assertEqual(
+            first_agent.OPTION_ORDER_VERSION, "stable-visible-action-v2"
+        )
 
     def test_cycle_stagnation_counts_only_transitions_to_seen_states(self) -> None:
         class StockCycleAgent:

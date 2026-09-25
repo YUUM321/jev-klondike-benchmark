@@ -450,6 +450,7 @@ def main() -> None:
                 "model_requested": args.jev_model,
                 "api_key_env": args.jev_api_key_env,
                 "option_order": args.jev_option_order,
+                "option_order_version": JevAgent.OPTION_ORDER_VERSION,
                 "option_order_seed": args.jev_option_order_seed,
                 "timeout_seconds_per_attempt": args.jev_timeout,
                 "max_retries": args.jev_retries,

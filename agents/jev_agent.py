@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import random
 import ssl
 import time
 import urllib.error
@@ -28,6 +27,7 @@ class JevAgent:
 
     name = "jev"
     TLS_VERSION = "TLSv1.2"
+    OPTION_ORDER_VERSION = "stable-visible-action-v2"
     CONTEXT_MODE = "history"
     RAW_INSTRUCTIONS = (
         "Goal: maximize the probability of eventually winning this Klondike game. "
@@ -108,17 +108,24 @@ class JevAgent:
         )
 
     def _ordered(self, observation: Observation, actions: list[Action]) -> list[Action]:
-        ordered = list(actions)
-        if self.option_order == "seeded":
-            # Ordering may depend only on public observation data. The game seed
-            # and full state hash both encode hidden cards and are forbidden here.
-            material = (
-                f"option-order-v1:{self.option_order_seed}:"
-                f"{observation.step}:{observation.visible_state_hash}"
-            ).encode("utf-8")
-            order_seed = int.from_bytes(hashlib.sha256(material).digest()[:8], "big")
-            random.Random(order_seed).shuffle(ordered)
-        return ordered
+        if self.option_order == "canonical":
+            return list(actions)
+
+        # Give each action a stable public-data-only priority. The same visible
+        # state therefore keeps the same relative option order across revisits,
+        # step numbers, input enumeration order, and Guard candidate subsets.
+        namespace = (
+            f"{self.OPTION_ORDER_VERSION}:{self.option_order_seed}:"
+            f"{observation.visible_state_hash}"
+        )
+
+        def order_key(action: Action) -> tuple[bytes, str]:
+            digest = hashlib.sha256(
+                f"{namespace}:{action.key}".encode("utf-8")
+            ).digest()
+            return digest, action.key
+
+        return sorted(actions, key=order_key)
 
     def _criterion_text(self, observation: Observation, action: Action) -> str:
         label = observation.label(action)
@@ -278,6 +285,7 @@ class JevAgent:
                 "candidate_count": len(actions),
                 "context_mode": self.CONTEXT_MODE,
                 "option_order": self.option_order,
+                "option_order_version": self.OPTION_ORDER_VERSION,
                 "request_sha256": request_hash,
                 "latency_ms": latency_ms,
                 "attempts": attempt + 1,
